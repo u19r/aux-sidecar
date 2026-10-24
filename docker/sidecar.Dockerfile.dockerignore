@@ -1,0 +1,12 @@
+**/.git
+**/target
+**/.DS_Store
+**/tmp
+**/run
+**/*.db
+**/*.sqlite
+**/*.log
+aux-fn
+aux-analytics
+aux-storage
+

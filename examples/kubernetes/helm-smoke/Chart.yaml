@@ -1,0 +1,8 @@
+apiVersion: v2
+name: aux-sidecar-smoke
+type: application
+version: 0.1.0
+dependencies:
+  - name: aux-sidecar
+    version: 0.1.0
+    repository: file://../../../charts/aux-sidecar

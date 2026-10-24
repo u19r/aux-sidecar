@@ -1,0 +1,49 @@
+[package]
+rust-version.workspace = true
+name = "sidecar-core"
+description = "Core embeddable runtime for aux-sidecar."
+version.workspace = true
+documentation.workspace = true
+edition.workspace = true
+homepage.workspace = true
+license.workspace = true
+repository.workspace = true
+
+[features]
+default = []
+
+[dependencies]
+authz-cedar = { workspace = true }
+authz-runtime = { workspace = true }
+authz-types = { workspace = true }
+base64 = { workspace = true }
+chrono = { workspace = true }
+futures = { workspace = true }
+http = { workspace = true }
+jwt-decode = { workspace = true }
+oauth-dpop = { workspace = true }
+rand = { workspace = true }
+serde = { workspace = true }
+serde-saphyr = { workspace = true }
+serde_json = { workspace = true }
+sha2 = { workspace = true }
+sidecar-contract = { version = "0.1.0", path = "../sidecar-contract" }
+thiserror = { workspace = true }
+tracing = { workspace = true }
+url = { workspace = true }
+
+[target.'cfg(not(target_arch = "wasm32"))'.dependencies]
+tokio = { workspace = true }
+
+[target.'cfg(target_arch = "wasm32")'.dependencies]
+js-sys = { workspace = true }
+
+[dev-dependencies]
+alloc-counter = { workspace = true }
+cpu-time = { workspace = true }
+oauth-dpop = { workspace = true, features = ["test-support"] }
+proptest = { workspace = true }
+sidecar-fixtures = { version = "0.1.0", path = "../sidecar-fixtures" }
+
+[lints]
+workspace = true

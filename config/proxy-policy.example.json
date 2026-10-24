@@ -1,0 +1,10 @@
+{
+  "tenant_id": "tenant_example",
+  "organization_id": "org_example",
+  "policy_generation": "proxy-v1",
+  "pull_limit_per_hour": 1000,
+  "push_limit_per_hour": 100,
+  "blocklist_policies": [{ "name": "default", "reason": "network_policy" }],
+  "entitlement_keys": [],
+  "trusted_context_headers": []
+}

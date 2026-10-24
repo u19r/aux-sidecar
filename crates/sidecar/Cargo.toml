@@ -1,0 +1,37 @@
+[package]
+rust-version.workspace = true
+name = "sidecar"
+description = "Native aux-sidecar HTTP process and embeddable server crate."
+version.workspace = true
+documentation.workspace = true
+edition.workspace = true
+homepage.workspace = true
+license.workspace = true
+repository.workspace = true
+
+[[bin]]
+name = "sidecar"
+path = "src/main.rs"
+
+[dependencies]
+axum = { workspace = true }
+base64 = { workspace = true }
+http-request = { workspace = true }
+oauth-dpop = { workspace = true }
+serde = { workspace = true }
+serde_json = { workspace = true }
+sidecar-contract = { version = "0.1.0", path = "../sidecar-contract" }
+sidecar-core = { version = "0.1.0", path = "../sidecar-core" }
+tokio = { workspace = true }
+tracing-subscriber = { workspace = true }
+url = { workspace = true }
+
+[dev-dependencies]
+oauth-dpop = { workspace = true, features = ["test-support"] }
+sha2 = { workspace = true }
+sidecar-fixtures = { version = "0.1.0", path = "../sidecar-fixtures" }
+tempfile.workspace = true
+tower = { workspace = true }
+
+[lints]
+workspace = true

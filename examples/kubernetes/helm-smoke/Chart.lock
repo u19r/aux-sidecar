@@ -1,0 +1,6 @@
+dependencies:
+- name: aux-sidecar
+  repository: file://../../../charts/aux-sidecar
+  version: 0.1.0
+digest: sha256:7e8726da2cf65c60e525257a49c79f0270424daebfadd7e1e5b2911a64462372
+generated: "2026-07-11T22:30:21.605298+01:00"

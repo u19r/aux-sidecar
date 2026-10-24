@@ -1,0 +1,10 @@
+name = "aux-sidecar-example"
+main = "src/index.ts"
+compatibility_date = "2026-07-11"
+
+[vars]
+AUXFN_BASE_URL = "https://tenant.example.com"
+AUXFN_ISSUER = "https://tenant.example.com"
+AUXFN_RESOURCE_AUDIENCE = "api://example"
+# Set AUXFN_RUNTIME_API_KEY with `wrangler secret put`; never place it here.
+# Set AUXFN_JWKS_JSON through managed configuration for the immutable bootstrap fixture.

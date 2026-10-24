@@ -1,0 +1,47 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: aux-sidecar-smoke-runtime-fixture
+data:
+  server.py: |
+    import json
+    import socket
+    from http.server import BaseHTTPRequestHandler, HTTPServer
+
+    class Handler(BaseHTTPRequestHandler):
+      def do_GET(self):
+        client = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
+        client.settimeout(1)
+        client.connect("/var/run/aux-sidecar/sidecar.sock")
+        client.sendall(b"GET /sidecar/live HTTP/1.1\r\nHost: localhost\r\nConnection: close\r\n\r\n")
+        status = client.recv(12)
+        client.close()
+        self.send_response(200 if status == b"HTTP/1.1 200" else 502)
+        self.end_headers()
+
+      def do_POST(self):
+        length = int(self.headers.get("content-length", "0"))
+        request = json.loads(self.rfile.read(length) or b"{}")
+        artifacts = []
+        for kind in request.get("want", []):
+          key = "default" if kind == "authz_evaluation_data" else "tenant"
+          artifacts.append({
+            "kind": kind, "key": key, "version": "fixture-v1",
+            "etag": "fixture-v1-" + kind, "immutable": True, "payload": {}
+          })
+        body = json.dumps({
+          "protocol_version": 1, "server_time": "2026-07-11T22:00:00Z",
+          "refresh_after_ms": 60000, "artifacts": artifacts, "unchanged": [],
+          "capabilities": {"authz": 1, "rate_limit": 1, "entitlements": 1,
+                           "blocklist": 1, "combined_policy": 1}
+        }).encode()
+        self.send_response(200)
+        self.send_header("content-type", "application/json")
+        self.send_header("content-length", str(len(body)))
+        self.end_headers()
+        self.wfile.write(body)
+
+      def log_message(self, *_):
+        pass
+
+    HTTPServer(("127.0.0.1", 8080), Handler).serve_forever()

@@ -1,0 +1,13 @@
+{
+  "$schema": "../node_modules/wrangler/config-schema.json",
+  "name": "aux-sidecar-backend-integration",
+  "main": "backend-worker.ts",
+  "compatibility_date": "2026-07-11",
+  "vars": {
+    "AUXFN_BASE_URL": "http://127.0.0.1:18787",
+    "AUXFN_ISSUER": "http://127.0.0.1:18787",
+    "AUXFN_RESOURCE_AUDIENCE": "api://worker-fixture",
+    "AUXFN_TENANT_DOMAIN": "worker-fixture.example",
+    "AUXFN_JWKS_JSON": "{\"keys\":[]}"
+  }
+}

@@ -1,0 +1,29 @@
+pub(crate) const HOSTED_LOGIN_TTL_MS: i64 = 10 * 60 * 1000;
+pub(crate) const HOSTED_LOGIN_RANDOM_TOKEN_BYTES: usize = 32;
+pub(crate) const MAX_AUTHZ_CACHE_ENTRIES: usize = 4_096;
+pub(crate) const MAX_AUTHZ_REFRESHES: usize = 4_096;
+pub(crate) const MAX_AUTHZ_POLICY_SNAPSHOTS: usize = 64;
+pub(crate) const MAX_AUTHZ_EVALUATION_RUNTIMES: usize = 32;
+pub(crate) const MAX_BLOCKLIST_RULES: usize = 10_000;
+pub(crate) const LOCAL_LEASE_REFILL_MAX_TOKENS: u64 = 10_000;
+pub(crate) const MAX_ENTITLEMENT_SNAPSHOTS: usize = 1_024;
+pub(crate) const MAX_RUNTIME_SYNC_ARTIFACTS: usize = 1_024;
+pub(crate) const MAX_RUNTIME_SYNC_ARTIFACT_BYTES: usize = 64 * 1024 * 1024;
+pub(crate) const MAX_ACTIVE_SYNC_FLIGHTS: usize = 256;
+pub(crate) const MAX_LEASE_ITEMS_PER_KEY: usize = 64;
+pub(crate) const MAX_LEASE_POOL_KEYS: usize = 4_096;
+pub(crate) const MAX_HOSTED_LOGIN_SESSIONS: usize = 1_024;
+pub(crate) const MAX_JWT_POLICY_CACHE_ENTRIES: usize = 128;
+pub(crate) const MAX_JWT_VERIFIER_CACHE_ENTRIES: usize = 128;
+pub(crate) const MAX_JWT_VALIDATION_RESULT_CACHE_ENTRIES: usize = 4_096;
+pub(crate) const MAX_JWT_VALIDATION_RESULT_CACHE_BYTES: usize = 16 * 1024 * 1024;
+pub(crate) const MAX_HOSTED_LOGIN_CLIENT_ID_BYTES: usize = 512;
+pub(crate) const MAX_HOSTED_LOGIN_REDIRECT_URI_BYTES: usize = 2_048;
+pub(crate) const MAX_HOSTED_LOGIN_SCOPE_ITEMS: usize = 32;
+pub(crate) const MAX_HOSTED_LOGIN_FIELD_BYTES: usize = 512;
+pub(crate) const MIN_AUTHZ_REFRESH_AFTER_PERCENT: u8 = 1;
+pub(crate) const MAX_AUTHZ_REFRESH_AFTER_PERCENT: u8 = 100;
+pub(crate) const PERCENT_SCALE: i64 = 100;
+
+#[cfg(test)]
+pub(crate) const TEST_AUTHZ_POLICY_VERSION: u64 = 42;

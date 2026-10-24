@@ -1,0 +1,6 @@
+apiVersion: v2
+name: aux-sidecar
+description: Library templates for adding the Aux Sidecar to an application pod
+type: library
+version: 0.1.0
+appVersion: "0.1.0"

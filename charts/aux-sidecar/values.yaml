@@ -1,0 +1,25 @@
+image:
+  repository: ghcr.io/u19r/aux-sidecar
+  tag: "0.1.0"
+  pullPolicy: IfNotPresent
+  command: []
+  args: []
+secretName: aux-sidecar
+healthcheck:
+  binaryPath: /usr/local/bin/sidecar
+socket:
+  enabled: true
+  path: /var/run/aux-sidecar/sidecar.sock
+resources:
+  requests:
+    cpu: 10m
+    memory: 32Mi
+  limits:
+    cpu: 250m
+    memory: 128Mi
+securityContext:
+  allowPrivilegeEscalation: false
+  readOnlyRootFilesystem: true
+  runAsNonRoot: true
+  capabilities:
+    drop: ["ALL"]

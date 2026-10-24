@@ -1,0 +1,44 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: aux-sidecar-smoke
+spec:
+  replicas: 1
+  selector:
+    matchLabels: { app: aux-sidecar-smoke }
+  template:
+    metadata:
+      labels: { app: aux-sidecar-smoke }
+      annotations:
+        {{- include "aux-sidecar.checksumAnnotations" . | nindent 8 }}
+    spec:
+      automountServiceAccountToken: false
+      securityContext:
+        seccompProfile: { type: RuntimeDefault }
+        fsGroup: 65532
+        fsGroupChangePolicy: OnRootMismatch
+      containers:
+        - name: application
+          image: "{{ .Values.application.image.repository }}:{{ .Values.application.image.tag }}"
+          imagePullPolicy: {{ .Values.application.image.pullPolicy }}
+          command: ["python", "/fixture/server.py"]
+          env: [{ name: PYTHONDONTWRITEBYTECODE, value: "1" }]
+          ports: [{ name: fixture, containerPort: 8080, protocol: TCP }]
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            runAsNonRoot: true
+            runAsUser: 65532
+            runAsGroup: 65532
+            capabilities: { drop: ["ALL"] }
+          resources:
+            requests: { cpu: 1m, memory: 16Mi }
+            limits: { cpu: 20m, memory: 32Mi }
+          volumeMounts:
+            - { name: aux-sidecar-socket, mountPath: /var/run/aux-sidecar }
+            - { name: runtime-fixture, mountPath: /fixture, readOnly: true }
+        {{- include "aux-sidecar.container" . | nindent 8 }}
+      volumes:
+        {{- include "aux-sidecar.volumes" . | nindent 8 }}
+        - name: runtime-fixture
+          configMap: { name: aux-sidecar-smoke-runtime-fixture }

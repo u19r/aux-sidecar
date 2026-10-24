@@ -1,0 +1,38 @@
+[package]
+rust-version.workspace = true
+name = "sidecar-wasm"
+description = "WebAssembly bindings for aux-sidecar."
+version.workspace = true
+documentation.workspace = true
+edition.workspace = true
+homepage.workspace = true
+license.workspace = true
+repository.workspace = true
+
+[lib]
+crate-type = ["cdylib", "rlib"]
+
+[dependencies]
+oauth-dpop = { workspace = true }
+serde = { workspace = true }
+serde_json = { workspace = true }
+sidecar-contract = { version = "0.1.0", path = "../sidecar-contract" }
+sidecar-core = { version = "0.1.0", path = "../sidecar-core" }
+url = { workspace = true }
+
+[target.'cfg(target_arch = "wasm32")'.dependencies]
+getrandom = { version = "0.4.3", features = ["wasm_js"] }
+js-sys = { workspace = true }
+serde-wasm-bindgen = { workspace = true }
+wasm-bindgen = { workspace = true }
+wasm-bindgen-futures = { workspace = true }
+
+[dev-dependencies]
+base64 = { workspace = true }
+chrono = { workspace = true }
+oauth-dpop = { workspace = true, features = ["test-support"] }
+sha2 = { workspace = true }
+sidecar-fixtures = { version = "0.1.0", path = "../sidecar-fixtures" }
+
+[lints]
+workspace = true

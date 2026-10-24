@@ -1,0 +1,39 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["image", "secretName", "healthcheck", "socket", "resources", "securityContext"],
+  "properties": {
+    "global": { "type": "object" },
+    "image": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["repository", "tag", "pullPolicy", "command", "args"],
+      "properties": {
+        "repository": { "type": "string", "minLength": 1 },
+        "tag": { "type": "string", "minLength": 1 },
+        "pullPolicy": { "enum": ["Always", "IfNotPresent", "Never"] },
+        "command": { "type": "array", "items": { "type": "string" } },
+        "args": { "type": "array", "items": { "type": "string" } }
+      }
+    },
+    "secretName": { "type": "string", "minLength": 1 },
+    "healthcheck": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["binaryPath"],
+      "properties": { "binaryPath": { "type": "string", "pattern": "^/" } }
+    },
+    "socket": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["enabled", "path"],
+      "properties": {
+        "enabled": { "type": "boolean" },
+        "path": { "type": "string", "pattern": "^/" }
+      }
+    },
+    "resources": { "type": "object" },
+    "securityContext": { "type": "object" }
+  }
+}

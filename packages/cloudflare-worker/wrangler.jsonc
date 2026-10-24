@@ -1,0 +1,12 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "aux-sidecar-example",
+  "main": "src/index.ts",
+  "compatibility_date": "2026-07-11",
+  "vars": {
+    "AUXFN_BASE_URL": "https://tenant.example.com",
+    "AUXFN_ISSUER": "https://tenant.example.com",
+    "AUXFN_RESOURCE_AUDIENCE": "api://example",
+    "AUXFN_JWKS_JSON": "{\"keys\":[]}"
+  }
+}

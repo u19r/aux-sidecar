@@ -1,0 +1,12 @@
+:8081 {
+  forward_auth unix//var/run/aux-sidecar/sidecar.sock {
+    uri /sidecar/proxy/check
+    header_up Authorization {http.request.header.Authorization}
+    header_up DPoP {http.request.header.DPoP}
+    header_up X-Original-Method {http.request.method}
+    header_up X-Original-URI {http.request.uri}
+    header_up X-Original-Host {http.request.host}
+    header_up X-Original-Client-IP {http.request.remote.host}
+  }
+  reverse_proxy 127.0.0.1:8080
+}

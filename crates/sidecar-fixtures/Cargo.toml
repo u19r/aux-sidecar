@@ -1,0 +1,22 @@
+[package]
+rust-version.workspace = true
+name = "sidecar-fixtures"
+description = "Open-source-safe fixtures for aux-sidecar tests and canaries."
+version.workspace = true
+documentation.workspace = true
+edition.workspace = true
+homepage.workspace = true
+license.workspace = true
+repository.workspace = true
+
+[dependencies]
+serde_json = { workspace = true }
+
+[target.'cfg(not(target_arch = "wasm32"))'.dependencies]
+jsonwebtoken = { workspace = true, features = ["aws_lc_rs"] }
+
+[target.'cfg(target_arch = "wasm32")'.dependencies]
+jsonwebtoken = { workspace = true, features = ["rust_crypto"] }
+
+[lints]
+workspace = true

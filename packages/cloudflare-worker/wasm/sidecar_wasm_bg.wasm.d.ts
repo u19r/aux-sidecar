@@ -1,0 +1,35 @@
+/* tslint:disable */
+/* eslint-disable */
+export const memory: WebAssembly.Memory;
+export const __wbg_sidecarclient_free: (a: number, b: number) => void;
+export const sidecarclient_acquireLeases: (a: number, b: number) => number;
+export const sidecarclient_beginHostedLogin: (a: number, b: number, c: number, d: number) => void;
+export const sidecarclient_capabilities: (a: number, b: number) => void;
+export const sidecarclient_checkRateLimit: (a: number, b: number) => number;
+export const sidecarclient_completeHostedLogin: (a: number, b: number) => number;
+export const sidecarclient_configureTrustedJwt: (a: number, b: number, c: number, d: number) => void;
+export const sidecarclient_decideBlocklist: (a: number, b: number) => number;
+export const sidecarclient_decidePolicy: (a: number, b: number) => number;
+export const sidecarclient_evaluateAuthz: (a: number, b: number) => number;
+export const sidecarclient_evaluateEntitlements: (a: number, b: number) => number;
+export const sidecarclient_getRateLimitConfig: (a: number) => number;
+export const sidecarclient_giveBackLeases: (a: number, b: number) => number;
+export const sidecarclient_isReady: (a: number) => number;
+export const sidecarclient_live: (a: number, b: number) => void;
+export const sidecarclient_new: (a: number) => number;
+export const sidecarclient_oauthChallenge: (a: number, b: number, c: number) => void;
+export const sidecarclient_ready: (a: number, b: number) => void;
+export const sidecarclient_refreshHostedLogin: (a: number, b: number) => number;
+export const sidecarclient_status: (a: number, b: number) => void;
+export const sidecarclient_sync: (a: number, b: number) => number;
+export const sidecarclient_validateAuthnJwt: (a: number, b: number, c: number, d: number) => void;
+export const sidecarclient_validateOAuthAccessToken: (a: number, b: number, c: number, d: number) => void;
+export const __wasm_bindgen_func_elem_21653: (a: number, b: number, c: number, d: number) => void;
+export const __wasm_bindgen_func_elem_21655: (a: number, b: number, c: number, d: number) => void;
+export const __wasm_bindgen_func_elem_805: (a: number, b: number) => void;
+export const __wbindgen_export: (a: number, b: number) => number;
+export const __wbindgen_export2: (a: number, b: number, c: number, d: number) => number;
+export const __wbindgen_export3: (a: number) => void;
+export const __wbindgen_export4: (a: number, b: number) => void;
+export const __wbindgen_add_to_stack_pointer: (a: number) => number;
+export const __wbindgen_export5: (a: number, b: number, c: number) => void;

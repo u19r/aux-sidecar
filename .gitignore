@@ -1,0 +1,13 @@
+/target/
+/crates/sidecar-canary/target/
+/.idea/
+/.vscode/
+/.DS_Store
+run-artifacts/
+*.profraw
+*.profdata
+.wrangler/
+.env
+.authz-audit/
+build/
+/packages/cloudflare-worker/dist/
