@@ -1,3 +1,4 @@
+# Versions: software-versions.json; details in software-version-consumers.md.
 [workspace]
 members = ["crates/*"]
 resolver = "3"
@@ -12,23 +13,23 @@ repository = "https://github.com/u19r/aux-sidecar"
 version = "0.1.0"
 
 [workspace.dependencies]
-alloc-counter = { git = "https://github.com/u19r/aux-common", rev = "662da2358c5c2bebecc85dd892c45deb825eabc6" }
-authz-cedar = { git = "https://github.com/u19r/aux-common", rev = "662da2358c5c2bebecc85dd892c45deb825eabc6" }
-authz-runtime = { git = "https://github.com/u19r/aux-common", rev = "662da2358c5c2bebecc85dd892c45deb825eabc6" }
-authz-types = { git = "https://github.com/u19r/aux-common", rev = "662da2358c5c2bebecc85dd892c45deb825eabc6" }
+alloc-counter = { git = "https://github.com/u19r/aux-common", package = "alloc-counter", rev = "13a283d32223ed27a37e9cf17f22ac16d26ca8a9" }
+authz-cedar = { git = "https://github.com/u19r/aux-common", package = "authz-cedar", rev = "13a283d32223ed27a37e9cf17f22ac16d26ca8a9" }
+authz-runtime = { git = "https://github.com/u19r/aux-common", package = "authz-runtime", rev = "13a283d32223ed27a37e9cf17f22ac16d26ca8a9" }
+authz-types = { git = "https://github.com/u19r/aux-common", package = "authz-types", rev = "13a283d32223ed27a37e9cf17f22ac16d26ca8a9" }
 axum = "0.8.9"
 base64 = "0.23.1"
 chrono = { version = "0.4.45", features = ["clock", "serde"] }
-cpu-time = "1.0"
+cpu-time = "1.0.0"
 cucumber = "0.23.0"
 futures = "0.3.34"
 http = "1.5.0"
-http-request = { git = "https://github.com/u19r/aux-common", rev = "662da2358c5c2bebecc85dd892c45deb825eabc6" }
-js-sys = "0.3.106"
+http-request = { git = "https://github.com/u19r/aux-common", package = "http-request", rev = "13a283d32223ed27a37e9cf17f22ac16d26ca8a9" }
+js-sys = "0.3.107"
 jsonwebtoken = { version = "11.1.0", default-features = false, features = ["use_pem"] }
-jwt-decode = { git = "https://github.com/u19r/aux-common", rev = "662da2358c5c2bebecc85dd892c45deb825eabc6" }
+jwt-decode = { git = "https://github.com/u19r/aux-common", package = "jwt-decode", rev = "13a283d32223ed27a37e9cf17f22ac16d26ca8a9" }
 libc = "0.2.191"
-oauth-dpop = { git = "https://github.com/u19r/aux-common", rev = "662da2358c5c2bebecc85dd892c45deb825eabc6" }
+oauth-dpop = { git = "https://github.com/u19r/aux-common", package = "oauth-dpop", rev = "13a283d32223ed27a37e9cf17f22ac16d26ca8a9" }
 proptest = "1.12.0"
 rand = "0.10.3"
 reqwest = { version = "0.13.5", default-features = false, features = ["json", "rustls"] }
@@ -44,8 +45,8 @@ tower = "0.5.3"
 tracing = "0.1.44"
 tracing-subscriber = { version = "0.3.23", features = ["env-filter", "fmt", "json"] }
 url = "2.5.8"
-wasm-bindgen = "0.2.129"
-wasm-bindgen-futures = "0.4.79"
+wasm-bindgen = "0.2.130"
+wasm-bindgen-futures = "0.4.80"
 
 [workspace.lints.clippy]
 all = { level = "warn", priority = -1 }

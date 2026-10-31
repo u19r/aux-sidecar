@@ -1,0 +1,431 @@
+{
+  "generated_by": "aux-infra: just versions-sync",
+  "source_digest": "6a704dcdef4586f86864220aaa81db95e99abf659245f96642b5393d23f2b8c7",
+  "repository": "aux-sidecar",
+  "payload_digest": "27fd27941fca15475600790cc7d4fccdb6a0520f56e6c46951b024c92149d73e",
+  "catalog": {
+    "schema": 1,
+    "tools": {
+      "rust": {
+        "version": "1.99.1",
+        "purpose": "Selected release",
+        "downloads": {}
+      },
+      "mold": {
+        "version": "3.0.0",
+        "purpose": "Selected release",
+        "downloads": {
+          "x86_64": {
+            "repository": "rui314/mold",
+            "tag": "v{version}",
+            "asset": "mold-{version}-x86_64-linux.tar.gz"
+          },
+          "aarch64": {
+            "repository": "rui314/mold",
+            "tag": "v{version}",
+            "asset": "mold-{version}-aarch64-linux.tar.gz"
+          }
+        }
+      },
+      "rustfmt": {
+        "version": "nightly",
+        "purpose": "Moving upstream channel resolved during AMI provisioning",
+        "downloads": {}
+      },
+      "ubi": {
+        "version": "9.8",
+        "purpose": "Shared UBI 9 builder and runtime release",
+        "downloads": {}
+      }
+    },
+    "images": {
+      "ubi": {
+        "repository": "registry.access.redhat.com/ubi9/ubi",
+        "tag": "{{tools.ubi.version}}"
+      },
+      "ubi_micro": {
+        "repository": "registry.access.redhat.com/ubi9/ubi-micro",
+        "tag": "{{tools.ubi.version}}"
+      },
+      "dockerfile": {
+        "repository": "docker.io/docker/dockerfile",
+        "tag": "1.28"
+      }
+    },
+    "actions": {
+      "actions_checkout": {
+        "repository": "actions/checkout",
+        "version": "v7.0.1"
+      },
+      "actions_upload_artifact": {
+        "repository": "actions/upload-artifact",
+        "version": "v7.0.2"
+      },
+      "actions_download_artifact": {
+        "repository": "actions/download-artifact",
+        "version": "v8.0.2"
+      },
+      "dtolnay_rust_toolchain": {
+        "repository": "dtolnay/rust-toolchain",
+        "version": "b725eda525362e7cf34af9a7243cac1e3f01a7ec"
+      },
+      "taiki_e_install_action": {
+        "repository": "taiki-e/install-action",
+        "version": "just"
+      },
+      "docker_setup_qemu_action": {
+        "repository": "docker/setup-qemu-action",
+        "version": "v3"
+      },
+      "docker_setup_buildx_action": {
+        "repository": "docker/setup-buildx-action",
+        "version": "v3"
+      },
+      "azure_setup_helm": {
+        "repository": "azure/setup-helm",
+        "version": "v4"
+      }
+    },
+    "cache_images": [],
+    "repositories": [
+      "aux-sidecar"
+    ]
+  },
+  "lock": {
+    "schema": 1,
+    "tools": {
+      "mold": {
+        "selection": "3.0.0",
+        "revision": "",
+        "downloads": {
+          "x86_64": {
+            "url": "https://github.com/rui314/mold/releases/download/v3.0.0/mold-3.0.0-x86_64-linux.tar.gz",
+            "sha256": "6c90d4a474c7c0409dfb575be03a5345878ac14fdba18de8b40fa58c60121189"
+          },
+          "aarch64": {
+            "url": "https://github.com/rui314/mold/releases/download/v3.0.0/mold-3.0.0-aarch64-linux.tar.gz",
+            "sha256": "52c759d3689babaea4c42af2f31062a74ab83e17ffb5a8090232534c67b70577"
+          }
+        }
+      }
+    },
+    "images": {
+      "ubi": {
+        "selection": "registry.access.redhat.com/ubi9/ubi:9.8",
+        "digest": "sha256:217dd5692d369799d34d09ffb6f5f3404efebc7900834490fdf9ae92fd6721d4",
+        "revision": "4fed77deb378a5b25e394fe33b2b061be0d026b8"
+      },
+      "ubi_micro": {
+        "selection": "registry.access.redhat.com/ubi9/ubi-micro:9.8",
+        "digest": "sha256:5be877a2a280ae36eb9ab80ca4efb28bbf77c57abbba38137cdc37a03b8465e6",
+        "revision": "f9d3e906f73b403e748bc95bb774a380d66c1f8e"
+      },
+      "dockerfile": {
+        "selection": "docker.io/docker/dockerfile:1.28",
+        "digest": "sha256:bb22d9815c728170f72750f4e5b0d672e06176142e1d602c7e66c050100b7e5b",
+        "revision": "f5b59a1f2fb25a0cb7072c398cab9aed7835da4e"
+      }
+    },
+    "actions": {
+      "actions_checkout": {
+        "selection": "actions/checkout@v7.0.1",
+        "revision": "3d3c42e5aac5ba805825da76410c181273ba90b1"
+      },
+      "actions_upload_artifact": {
+        "selection": "actions/upload-artifact@v7.0.2",
+        "revision": "cf430e030ddbb5b0abf93d22962f4752f3646cd9"
+      },
+      "actions_download_artifact": {
+        "selection": "actions/download-artifact@v8.0.2",
+        "revision": "9000827ccba6bdab643e8b6fd33ac0654aef8333"
+      },
+      "dtolnay_rust_toolchain": {
+        "selection": "dtolnay/rust-toolchain@b725eda525362e7cf34af9a7243cac1e3f01a7ec",
+        "revision": "b725eda525362e7cf34af9a7243cac1e3f01a7ec"
+      },
+      "taiki_e_install_action": {
+        "selection": "taiki-e/install-action@just",
+        "revision": "48370026b493bf84596242c95259dba0fe3fb080"
+      },
+      "docker_setup_qemu_action": {
+        "selection": "docker/setup-qemu-action@v3",
+        "revision": "c7c53464625b32c7a7e944ae62b3e17d2b600130"
+      },
+      "docker_setup_buildx_action": {
+        "selection": "docker/setup-buildx-action@v3",
+        "revision": "8d2750c68a42422c14e847fe6c8ac0403b4cbd6f"
+      },
+      "azure_setup_helm": {
+        "selection": "azure/setup-helm@v4",
+        "revision": "1a275c3b69536ee54be43f2070a358922e12c8d4"
+      }
+    }
+  },
+  "bindings": {
+    "schema": 1,
+    "bindings": [
+      {
+        "kind": "text",
+        "key": "tools.rust.version",
+        "template": "{{tools.rust.version}}",
+        "files": [
+          "aux-sidecar/Cargo.toml",
+          "aux-sidecar/rust-toolchain.toml"
+        ],
+        "pattern": "(?:channel|rust-version)\\s*=\\s*\"(?<value>[^\"]+)\"",
+        "encoding": "plain"
+      },
+      {
+        "kind": "text",
+        "key": "tools.rust.version",
+        "template": "{{tools.rust.version}}",
+        "files": [
+          "aux-sidecar/docker/sidecar-canary.Dockerfile",
+          "aux-sidecar/docker/sidecar.Dockerfile"
+        ],
+        "pattern": "RUST_VERSION=(?<value>\\d+\\.\\d+\\.\\d+)",
+        "encoding": "plain"
+      },
+      {
+        "kind": "text",
+        "key": "tools.rust.version",
+        "template": "{{tools.rust.version}}",
+        "files": [
+          "aux-sidecar/.github/workflows/deploy.yml"
+        ],
+        "pattern": "toolchain:\\s*[\"\\x27]?(?<value>\\d+\\.\\d+\\.\\d+)",
+        "encoding": "plain"
+      },
+      {
+        "kind": "text",
+        "key": "tools.mold.version",
+        "template": "{{tools.mold.version}}",
+        "files": [
+          "aux-sidecar/.cargo/config.toml",
+          "aux-sidecar/docker/sidecar-canary.Dockerfile",
+          "aux-sidecar/docker/sidecar.Dockerfile",
+          "aux-sidecar/scripts/install-mold.sh"
+        ],
+        "pattern": "aux-mold-(?<value>\\d+\\.\\d+\\.\\d+)",
+        "encoding": "plain"
+      },
+      {
+        "kind": "text",
+        "key": "tools.mold.version",
+        "template": "{{tools.mold.version}}",
+        "files": [
+          "aux-sidecar/scripts/install-mold.sh"
+        ],
+        "pattern": "mold-(?<value>\\d+\\.\\d+\\.\\d+)-",
+        "encoding": "plain"
+      },
+      {
+        "kind": "text",
+        "key": "tools.mold.version",
+        "template": "{{tools.mold.version}}",
+        "files": [
+          "aux-sidecar/.github/workflows/deploy.yml",
+          "aux-sidecar/scripts/install-mold.sh"
+        ],
+        "pattern": "mold (?<value>\\d+\\.\\d+\\.\\d+)",
+        "encoding": "plain"
+      },
+      {
+        "kind": "text",
+        "key": "tools.mold.version",
+        "template": "{{tools.mold.version}}",
+        "files": [
+          "aux-sidecar/scripts/install-mold.sh"
+        ],
+        "pattern": "mold/releases/download/v(?<value>\\d+\\.\\d+\\.\\d+)",
+        "encoding": "plain"
+      },
+      {
+        "kind": "text",
+        "key": "tools.mold.version",
+        "template": "{{tools.mold.version}}",
+        "files": [
+          "aux-sidecar/scripts/install-mold.sh"
+        ],
+        "pattern": "mold (?<value>\\d+\\\\\\.\\d+\\\\\\.\\d+)",
+        "encoding": "regex"
+      },
+      {
+        "kind": "text",
+        "key": "lock.tools.mold.x86_64.sha256",
+        "template": "{{lock.tools.mold.x86_64.sha256}}",
+        "files": [
+          "aux-sidecar/scripts/install-mold.sh"
+        ],
+        "pattern": "archive_arch=x86_64\\s+checksum=(?<value>[a-f0-9]{64})",
+        "encoding": "plain"
+      },
+      {
+        "kind": "text",
+        "key": "lock.tools.mold.aarch64.sha256",
+        "template": "{{lock.tools.mold.aarch64.sha256}}",
+        "files": [
+          "aux-sidecar/scripts/install-mold.sh"
+        ],
+        "pattern": "archive_arch=aarch64\\s+checksum=(?<value>[a-f0-9]{64})",
+        "encoding": "plain"
+      },
+      {
+        "kind": "text",
+        "key": "images.ubi.reference",
+        "template": "{{images.ubi.reference}}",
+        "files": [
+          "aux-sidecar/docker/sidecar-canary.Dockerfile",
+          "aux-sidecar/docker/sidecar.Dockerfile"
+        ],
+        "pattern": "(?<value>(?:registry\\.local/registry\\.access\\.redhat\\.com/ubi9/ubi|registry\\.access\\.redhat\\.com/ubi9/ubi)(?::[a-zA-Z0-9_.+-]+)?@sha256:(?:\\\\\\n[ \\t]*)?[a-f0-9]{64})",
+        "encoding": "rust-wrapped"
+      },
+      {
+        "kind": "text",
+        "key": "images.ubi_micro.reference",
+        "template": "{{images.ubi_micro.reference}}",
+        "files": [
+          "aux-sidecar/docker/sidecar-canary.Dockerfile",
+          "aux-sidecar/docker/sidecar.Dockerfile"
+        ],
+        "pattern": "(?<value>(?:registry\\.local/registry\\.access\\.redhat\\.com/ubi9/ubi\\-micro|registry\\.access\\.redhat\\.com/ubi9/ubi\\-micro)(?::[a-zA-Z0-9_.+-]+)?@sha256:(?:\\\\\\n[ \\t]*)?[a-f0-9]{64})",
+        "encoding": "rust-wrapped"
+      },
+      {
+        "kind": "text",
+        "key": "images.dockerfile.tag",
+        "template": "{{images.dockerfile.tag}}",
+        "files": [
+          "aux-sidecar/docker/sidecar-canary.Dockerfile",
+          "aux-sidecar/docker/sidecar.Dockerfile"
+        ],
+        "pattern": "(?:registry\\.local/docker/dockerfile|docker\\.io/docker/dockerfile|docker/dockerfile):(?<value>[a-zA-Z0-9_.+-]+)(?![a-zA-Z0-9_.+-]*@sha256)",
+        "encoding": "plain"
+      },
+      {
+        "kind": "text",
+        "key": "images.dockerfile.tag",
+        "template": "{{images.dockerfile.tag}}",
+        "files": [
+          "aux-sidecar/docker/sidecar-canary.Dockerfile",
+          "aux-sidecar/docker/sidecar.Dockerfile"
+        ],
+        "pattern": "docker/dockerfile:(?<value>\\d+\\.\\d+(?:\\.\\d+)?)(?![\\d.]*@sha256)",
+        "encoding": "plain"
+      },
+      {
+        "kind": "text",
+        "key": "actions.actions_checkout.revision",
+        "template": "{{actions.actions_checkout.revision}}",
+        "files": [
+          "aux-sidecar/.github/workflows/deploy.yml"
+        ],
+        "pattern": "actions/checkout@(?<value>[a-zA-Z0-9_.-]+)",
+        "encoding": "plain"
+      },
+      {
+        "kind": "text",
+        "key": "actions.actions_upload_artifact.revision",
+        "template": "{{actions.actions_upload_artifact.revision}}",
+        "files": [
+          "aux-sidecar/.github/workflows/deploy.yml"
+        ],
+        "pattern": "actions/upload\\-artifact@(?<value>[a-zA-Z0-9_.-]+)",
+        "encoding": "plain"
+      },
+      {
+        "kind": "text",
+        "key": "actions.actions_download_artifact.revision",
+        "template": "{{actions.actions_download_artifact.revision}}",
+        "files": [
+          "aux-sidecar/.github/workflows/deploy.yml"
+        ],
+        "pattern": "actions/download\\-artifact@(?<value>[a-zA-Z0-9_.-]+)",
+        "encoding": "plain"
+      },
+      {
+        "kind": "text",
+        "key": "actions.dtolnay_rust_toolchain.revision",
+        "template": "{{actions.dtolnay_rust_toolchain.revision}}",
+        "files": [
+          "aux-sidecar/.github/workflows/deploy.yml"
+        ],
+        "pattern": "dtolnay/rust\\-toolchain@(?<value>[a-zA-Z0-9_.-]+)",
+        "encoding": "plain"
+      },
+      {
+        "kind": "text",
+        "key": "actions.taiki_e_install_action.revision",
+        "template": "{{actions.taiki_e_install_action.revision}}",
+        "files": [
+          "aux-sidecar/.github/workflows/deploy.yml"
+        ],
+        "pattern": "taiki\\-e/install\\-action@(?<value>[a-zA-Z0-9_.-]+)",
+        "encoding": "plain"
+      },
+      {
+        "kind": "text",
+        "key": "actions.docker_setup_qemu_action.revision",
+        "template": "{{actions.docker_setup_qemu_action.revision}}",
+        "files": [
+          "aux-sidecar/.github/workflows/deploy.yml"
+        ],
+        "pattern": "docker/setup\\-qemu\\-action@(?<value>[a-zA-Z0-9_.-]+)",
+        "encoding": "plain"
+      },
+      {
+        "kind": "text",
+        "key": "actions.docker_setup_buildx_action.revision",
+        "template": "{{actions.docker_setup_buildx_action.revision}}",
+        "files": [
+          "aux-sidecar/.github/workflows/deploy.yml"
+        ],
+        "pattern": "docker/setup\\-buildx\\-action@(?<value>[a-zA-Z0-9_.-]+)",
+        "encoding": "plain"
+      },
+      {
+        "kind": "text",
+        "key": "actions.azure_setup_helm.revision",
+        "template": "{{actions.azure_setup_helm.revision}}",
+        "files": [
+          "aux-sidecar/.github/workflows/deploy.yml"
+        ],
+        "pattern": "azure/setup\\-helm@(?<value>[a-zA-Z0-9_.-]+)",
+        "encoding": "plain"
+      },
+      {
+        "kind": "text",
+        "key": "tools.rustfmt.version",
+        "template": "{{tools.rustfmt.version}}",
+        "files": [
+          "aux-sidecar/justfile"
+        ],
+        "pattern": "cargo \\+(?<value>nightly(?:-\\d+-\\d+-\\d+)?)",
+        "encoding": "plain"
+      },
+      {
+        "kind": "text",
+        "key": "tools.rustfmt.version",
+        "template": "{{tools.rustfmt.version}}",
+        "files": [
+          "aux-sidecar/.github/workflows/deploy.yml",
+          "aux-sidecar/justfile"
+        ],
+        "pattern": "rustup toolchain install (?<value>nightly(?:-\\d+-\\d+-\\d+)?)",
+        "encoding": "plain"
+      },
+      {
+        "kind": "text",
+        "key": "tools.rustfmt.version",
+        "template": "{{tools.rustfmt.version}}",
+        "files": [
+          "aux-sidecar/justfile"
+        ],
+        "pattern": "--toolchain (?<value>nightly(?:-\\d+-\\d+-\\d+)?)",
+        "encoding": "plain"
+      }
+    ],
+    "copies": []
+  }
+}

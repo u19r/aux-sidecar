@@ -1,9 +1,17 @@
 #!/usr/bin/env bash
+# Versions: software-versions.json; details in software-version-consumers.md.
 # Canonical source: aux-infra/scripts/install-mold.sh; copied for standalone builds.
 set -euo pipefail
 
 [[ "$(uname -s)" == Linux ]] || exit 0
 prefix=/opt/aux-mold-3.0.0
+if [[ -n "${GITHUB_ENV:-}" ]]; then
+  prefix="${RUNNER_TEMP:-$HOME/.cache}/aux-mold-3.0.0"
+  {
+    printf 'CARGO_TARGET_X86_64_UNKNOWN_LINUX_GNU_LINKER=%s/bin/mold-cc\n' "$prefix"
+    printf 'CARGO_TARGET_AARCH64_UNKNOWN_LINUX_GNU_LINKER=%s/bin/mold-cc\n' "$prefix"
+  } >>"$GITHUB_ENV"
+fi
 case "$(uname -m)" in
 x86_64)
   archive_arch=x86_64
@@ -40,21 +48,25 @@ done
 cat >"$work_dir/mold/bin/mold-cc" <<'LINKER'
 #!/usr/bin/env bash
 set -euo pipefail
-test -x /opt/aux-mold-3.0.0/libexec/mold/ld
-exec cc "$@" -B/opt/aux-mold-3.0.0/libexec/mold -fuse-ld=bfd
+prefix=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/.." && pwd -P)
+test -x "$prefix/libexec/mold/ld"
+exec cc "$@" -B"$prefix/libexec/mold" -fuse-ld=bfd
 LINKER
 cat >"$work_dir/mold/bin/mold-link" <<'LINKER'
 #!/usr/bin/env bash
 set -euo pipefail
-test -x /opt/aux-mold-3.0.0/libexec/mold/ld
+prefix=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/.." && pwd -P)
+test -x "$prefix/libexec/mold/ld"
 compiler=$1
 shift
-exec "$compiler" "$@" -B/opt/aux-mold-3.0.0/libexec/mold -fuse-ld=bfd
+exec "$compiler" "$@" -B"$prefix/libexec/mold" -fuse-ld=bfd
 LINKER
 chmod 755 "$work_dir/mold/bin/mold-cc" "$work_dir/mold/bin/mold-link"
 elevate=()
-if [[ "$EUID" != 0 ]]; then elevate=(sudo); fi
+if [[ "$EUID" != 0 && -z "${GITHUB_ENV:-}" ]]; then elevate=(sudo); fi
 "${elevate[@]}" mkdir -p "$prefix"
 "${elevate[@]}" cp -a "$work_dir/mold/." "$prefix/"
-"${elevate[@]}" chown -R root:root "$prefix"
+if [[ -z "${GITHUB_ENV:-}" ]]; then
+  "${elevate[@]}" chown -R root:root "$prefix"
+fi
 "$prefix/bin/mold" --version
