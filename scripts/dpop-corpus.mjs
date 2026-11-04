@@ -4,7 +4,7 @@ import { readFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 
-/** The pinned crate owns the corpus; the adapter only binds time and its issuer token. */
+/** The resolved crate owns the corpus; the adapter only binds time and its issuer token. */
 export function loadDpopCorpus() {
   const metadata = JSON.parse(
     execFileSync("cargo", ["metadata", "--locked", "--format-version", "1"], {
@@ -14,12 +14,10 @@ export function loadDpopCorpus() {
     }),
   );
   const dependency = metadata.packages.find(
-    (entry) =>
-      entry.name === "oauth-dpop" &&
-      entry.source?.startsWith("git+https://github.com/u19r/aux-common?"),
+    (entry) => entry.name === "oauth-dpop",
   );
   if (!dependency)
-    throw new Error("The adapter corpus requires the pinned GitHub oauth-dpop dependency.");
+    throw new Error("The adapter corpus requires the resolved oauth-dpop dependency.");
   return JSON.parse(
     readFileSync(
       join(dirname(dependency.manifest_path), "fixtures/independent-corpus.json"),
@@ -30,7 +28,7 @@ export function loadDpopCorpus() {
 
 export function bindDpopCorpus(corpus, nowSeconds, accessToken) {
   const privateCase = corpus.cases.find((entry) => entry.name === "private embedded key");
-  if (!privateCase) throw new Error("The pinned corpus omitted its published fixture signing key.");
+  if (!privateCase) throw new Error("The resolved corpus omitted its published fixture signing key.");
   const header = JSON.parse(Buffer.from(privateCase.proof.split(".")[0], "base64url").toString());
   const privateKey = createPrivateKey({ key: header.jwk, format: "jwk" });
   const binding = {

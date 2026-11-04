@@ -13,10 +13,10 @@ repository = "https://github.com/u19r/aux-sidecar"
 version = "0.1.0"
 
 [workspace.dependencies]
-alloc-counter = { git = "https://github.com/u19r/aux-common", package = "alloc-counter", rev = "13a283d32223ed27a37e9cf17f22ac16d26ca8a9" }
-authz-cedar = { git = "https://github.com/u19r/aux-common", package = "authz-cedar", rev = "13a283d32223ed27a37e9cf17f22ac16d26ca8a9" }
-authz-runtime = { git = "https://github.com/u19r/aux-common", package = "authz-runtime", rev = "13a283d32223ed27a37e9cf17f22ac16d26ca8a9" }
-authz-types = { git = "https://github.com/u19r/aux-common", package = "authz-types", rev = "13a283d32223ed27a37e9cf17f22ac16d26ca8a9" }
+alloc-counter = { git = "https://github.com/u19r/aux-common", package = "alloc-counter", rev = "6d6a27ab346ede89700034e6f5f3ac3be318ba89" }
+authz-cedar = { git = "https://github.com/u19r/aux-common", package = "authz-cedar", rev = "6d6a27ab346ede89700034e6f5f3ac3be318ba89" }
+authz-runtime = { git = "https://github.com/u19r/aux-common", package = "authz-runtime", rev = "6d6a27ab346ede89700034e6f5f3ac3be318ba89" }
+authz-types = { git = "https://github.com/u19r/aux-common", package = "authz-types", rev = "6d6a27ab346ede89700034e6f5f3ac3be318ba89" }
 axum = "0.8.9"
 base64 = "0.23.1"
 chrono = { version = "0.4.45", features = ["clock", "serde"] }
@@ -24,12 +24,12 @@ cpu-time = "1.0.0"
 cucumber = "0.23.0"
 futures = "0.3.34"
 http = "1.5.0"
-http-request = { git = "https://github.com/u19r/aux-common", package = "http-request", rev = "13a283d32223ed27a37e9cf17f22ac16d26ca8a9" }
+http-request = { git = "https://github.com/u19r/aux-common", package = "http-request", rev = "6d6a27ab346ede89700034e6f5f3ac3be318ba89" }
 js-sys = "0.3.107"
 jsonwebtoken = { version = "11.1.0", default-features = false, features = ["use_pem"] }
-jwt-decode = { git = "https://github.com/u19r/aux-common", package = "jwt-decode", rev = "13a283d32223ed27a37e9cf17f22ac16d26ca8a9" }
+jwt-decode = { git = "https://github.com/u19r/aux-common", package = "jwt-decode", rev = "6d6a27ab346ede89700034e6f5f3ac3be318ba89" }
 libc = "0.2.191"
-oauth-dpop = { git = "https://github.com/u19r/aux-common", package = "oauth-dpop", rev = "13a283d32223ed27a37e9cf17f22ac16d26ca8a9" }
+oauth-dpop = { git = "https://github.com/u19r/aux-common", package = "oauth-dpop", rev = "6d6a27ab346ede89700034e6f5f3ac3be318ba89" }
 proptest = "1.12.0"
 rand = "0.10.3"
 reqwest = { version = "0.13.5", default-features = false, features = ["json", "rustls"] }
