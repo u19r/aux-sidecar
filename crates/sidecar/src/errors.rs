@@ -10,6 +10,10 @@ pub struct ErrorResponse {
     pub redirect_url: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub redirect_reason: Option<&'static str>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub authentication: Option<Box<sidecar_contract::native_auth::NativeAuthenticationFailure>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub request_id: Option<String>,
 }
 
 pub fn sidecar_error_response(error: SidecarError) -> axum::response::Response {
@@ -23,6 +27,8 @@ pub fn sidecar_error_response(error: SidecarError) -> axum::response::Response {
             message: error.message,
             redirect_url: error.redirect_url,
             redirect_reason: error.redirect_reason,
+            authentication: error.authentication,
+            request_id: error.request_id,
         }),
     )
         .into_response();

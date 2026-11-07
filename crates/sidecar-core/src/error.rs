@@ -16,12 +16,14 @@ pub struct SidecarError {
     pub status_code: u16,
     pub redirect_url: Option<String>,
     pub redirect_reason: Option<&'static str>,
+    pub authentication: Option<Box<sidecar_contract::native_auth::NativeAuthenticationFailure>>,
+    pub request_id: Option<String>,
     pub local_authz_fallback_reason: Option<LocalAuthzFallbackReason>,
 }
 
 impl SidecarError {
     pub fn oauth_challenge(&self) -> Option<String> {
-        if self.status_code != 401 {
+        if self.status_code != 401 || self.authentication.is_some() {
             return None;
         }
         let challenge = match self.code {
@@ -60,6 +62,8 @@ impl SidecarError {
             redirect_url: None,
             redirect_reason: None,
             local_authz_fallback_reason: None,
+            authentication: None,
+            request_id: None,
         }
     }
 

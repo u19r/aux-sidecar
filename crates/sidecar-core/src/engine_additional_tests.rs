@@ -168,6 +168,7 @@ async fn hosted_login_given_begin_and_complete_then_exchanges_code_and_validates
     let engine = SidecarEngine::new(config(), TestTransport::new());
     let begin = engine
         .begin_hosted_login(&BeginHostedLoginRequest {
+            resource: None,
             client_id: "sidecar-hosted-login".to_string(),
             redirect_uri: "http://127.0.0.1:8787/callback".to_string(),
             scopes: vec!["openid".to_string(), "profile".to_string()],
@@ -199,6 +200,7 @@ async fn hosted_login_given_remote_redirect_uri_then_rejects_begin_request() {
 
     let error = engine
         .begin_hosted_login(&BeginHostedLoginRequest {
+            resource: None,
             client_id: "sidecar-hosted-login".to_string(),
             redirect_uri: "https://attacker.example.test/callback".to_string(),
             scopes: Vec::new(),
@@ -214,6 +216,7 @@ async fn hosted_login_given_oversized_direct_input_then_rejects_before_url_const
     let engine = SidecarEngine::new(config(), TestTransport::new());
     let error = engine
         .begin_hosted_login(&BeginHostedLoginRequest {
+            resource: None,
             client_id: "client".to_string(),
             redirect_uri: format!("http://127.0.0.1/{}", "x".repeat(2_048)),
             scopes: Vec::new(),
@@ -229,6 +232,7 @@ async fn hosted_login_given_reused_state_then_rejects_second_completion() {
     let engine = SidecarEngine::new(config(), TestTransport::new());
     let begin = engine
         .begin_hosted_login(&BeginHostedLoginRequest {
+            resource: None,
             client_id: "sidecar-hosted-login".to_string(),
             redirect_uri: "http://127.0.0.1:8787/callback".to_string(),
             scopes: Vec::new(),
@@ -263,6 +267,7 @@ async fn hosted_login_given_refresh_token_then_exchanges_refresh_and_validates_a
         .refresh_hosted_login(
             &RequestContext::default(),
             &RefreshHostedLoginRequest {
+                resource: None,
                 client_id: "sidecar-hosted-login".to_string(),
                 refresh_token: "refresh_123".to_string(),
                 scope: Some("openid profile".to_string()),
@@ -286,6 +291,7 @@ async fn hosted_login_given_empty_refresh_token_then_rejects_without_exchange() 
         .refresh_hosted_login(
             &RequestContext::default(),
             &RefreshHostedLoginRequest {
+                resource: None,
                 client_id: "sidecar-hosted-login".to_string(),
                 refresh_token: " ".to_string(),
                 scope: None,
@@ -305,6 +311,7 @@ fn given_no_configured_jwt_identity_when_beginning_hosted_login_then_missing_val
     let engine = SidecarEngine::new(settings, TestTransport::new());
     let error = engine
         .begin_hosted_login(&BeginHostedLoginRequest {
+            resource: None,
             client_id: "sidecar-hosted-login".into(),
             redirect_uri: "http://127.0.0.1:8787/callback".into(),
             scopes: vec!["openid".into()],
@@ -329,6 +336,7 @@ fn given_invalid_issuer_when_embedded_engine_begins_hosted_login_then_handoff_is
         let engine = SidecarEngine::new(config_with_issuer(issuer), TestTransport::new());
         let error = engine
             .begin_hosted_login(&BeginHostedLoginRequest {
+                resource: None,
                 client_id: "sidecar-hosted-login".into(),
                 redirect_uri: "http://127.0.0.1:8787/callback".into(),
                 scopes: vec!["openid".into()],

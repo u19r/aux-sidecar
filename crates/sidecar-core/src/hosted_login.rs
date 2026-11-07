@@ -23,6 +23,20 @@ pub fn begin_hosted_login(
     state: &SidecarState,
     request: &BeginHostedLoginRequest,
 ) -> SidecarResult<BeginHostedLoginResult> {
+    let prepared = prepare_hosted_login(config, request)?;
+    state.store_hosted_login_session(prepared.session);
+    Ok(prepared.result)
+}
+
+pub(crate) struct PreparedHostedLogin {
+    pub(crate) session: HostedLoginSession,
+    pub(crate) result: BeginHostedLoginResult,
+}
+
+pub(crate) fn prepare_hosted_login(
+    config: &SidecarEngineConfig,
+    request: &BeginHostedLoginRequest,
+) -> SidecarResult<PreparedHostedLogin> {
     validate_begin_request(request)?;
     let auth_url = authorization_url(config, request)?;
     let code_verifier = random_url_token();
@@ -31,17 +45,21 @@ pub fn begin_hosted_login(
     let expires_at_ms = current_time_millis().saturating_add(HOSTED_LOGIN_TTL_MS);
     let login_url = build_login_url(auth_url, request, &state_token, &challenge)?;
 
-    state.store_hosted_login_session(HostedLoginSession {
+    let session = HostedLoginSession {
+        resource: request.resource.clone(),
         state: state_token,
         code_verifier,
         client_id: request.client_id.clone(),
         redirect_uri: request.redirect_uri.clone(),
         expires_at_ms,
-    });
+    };
 
-    Ok(BeginHostedLoginResult {
-        login_url,
-        expires_at_ms,
+    Ok(PreparedHostedLogin {
+        session,
+        result: BeginHostedLoginResult {
+            login_url,
+            expires_at_ms,
+        },
     })
 }
 
@@ -49,6 +67,20 @@ pub fn complete_hosted_login_form(
     state: &SidecarState,
     request: &CompleteHostedLoginRequest,
 ) -> SidecarResult<Vec<(&'static str, String)>> {
+    let exchange = prepare_hosted_login_exchange(state, request)?;
+    exchange.attempt.consume();
+    Ok(exchange.fields)
+}
+
+pub(crate) struct PreparedHostedLoginExchange<'a> {
+    pub(crate) attempt: crate::state::HostedLoginAttempt<'a>,
+    pub(crate) fields: Vec<(&'static str, String)>,
+}
+
+pub(crate) fn prepare_hosted_login_exchange<'a>(
+    state: &'a SidecarState,
+    request: &CompleteHostedLoginRequest,
+) -> SidecarResult<PreparedHostedLoginExchange<'a>> {
     if let Some(error) = request.error.as_deref() {
         return Err(SidecarError::unauthorized(
             "hosted_login_denied",
@@ -67,19 +99,20 @@ pub fn complete_hosted_login_form(
         .ok_or_else(|| {
             SidecarError::bad_request("hosted_login_code_missing", "code is required")
         })?;
-    let session = state
-        .take_hosted_login_session(&request.state, current_time_millis())
-        .ok_or_else(|| {
-            SidecarError::unauthorized("hosted_login_state_invalid", "state is invalid")
-        })?;
+    let attempt = crate::state::HostedLoginAttempt::try_new(state, &request.state)?;
+    let session = &attempt.session;
 
-    Ok(vec![
+    let mut fields = vec![
         ("grant_type", "authorization_code".to_string()),
         ("code", code),
-        ("redirect_uri", session.redirect_uri),
-        ("client_id", session.client_id),
-        ("code_verifier", session.code_verifier),
-    ])
+        ("redirect_uri", session.redirect_uri.clone()),
+        ("client_id", session.client_id.clone()),
+        ("code_verifier", session.code_verifier.clone()),
+    ];
+    if let Some(resource) = &session.resource {
+        fields.push(("resource", resource.clone()));
+    }
+    Ok(PreparedHostedLoginExchange { attempt, fields })
 }
 
 pub fn complete_hosted_login_result(
@@ -108,6 +141,9 @@ pub fn refresh_hosted_login_form(
     {
         fields.push(("scope", scope.to_string()));
     }
+    if let Some(resource) = &request.resource {
+        fields.push(("resource", resource.clone()));
+    }
     Ok(fields)
 }
 
@@ -132,6 +168,7 @@ pub fn empty_context() -> RequestContext {
 }
 
 fn validate_begin_request(request: &BeginHostedLoginRequest) -> SidecarResult<()> {
+    validate_resource_indicator(request.resource.as_deref())?;
     if request.client_id.trim().is_empty() {
         return Err(SidecarError::bad_request(
             "hosted_login_client_id_missing",
@@ -198,6 +235,7 @@ fn redirect_uri_is_loopback(url: &Url) -> bool {
 }
 
 fn validate_refresh_request(request: &RefreshHostedLoginRequest) -> SidecarResult<()> {
+    validate_resource_indicator(request.resource.as_deref())?;
     if request.client_id.trim().is_empty() {
         return Err(SidecarError::bad_request(
             "hosted_login_refresh_client_id_missing",
@@ -252,6 +290,9 @@ fn authorization_url(
         .append_pair("response_type", "code")
         .append_pair("client_id", &request.client_id)
         .append_pair("redirect_uri", &request.redirect_uri);
+    if let Some(resource) = &request.resource {
+        url.query_pairs_mut().append_pair("resource", resource);
+    }
     Ok(url)
 }
 
@@ -281,6 +322,18 @@ fn random_url_token() -> String {
     URL_SAFE_NO_PAD.encode(random::<[u8; HOSTED_LOGIN_RANDOM_TOKEN_BYTES]>())
 }
 
-fn code_challenge(verifier: &str) -> String {
+pub(crate) fn code_challenge(verifier: &str) -> String {
     URL_SAFE_NO_PAD.encode(Sha256::digest(verifier.as_bytes()))
+}
+
+fn validate_resource_indicator(resource: Option<&str>) -> SidecarResult<()> {
+    if resource
+        .is_some_and(|resource| !bounded_text(resource, MAX_HOSTED_LOGIN_REDIRECT_URI_BYTES, true))
+    {
+        return Err(SidecarError::bad_request(
+            "hosted_login_resource_invalid",
+            "resource is invalid",
+        ));
+    }
+    Ok(())
 }

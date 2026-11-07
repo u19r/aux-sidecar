@@ -305,6 +305,18 @@ impl SidecarClient {
     }
 
     #[cfg(target_arch = "wasm32")]
+    #[wasm_bindgen(js_name = beginHostedRecovery)]
+    pub async fn begin_hosted_recovery(&self, request: JsValue) -> Result<JsValue, JsValue> {
+        let request =
+            wasm_request::<sidecar_contract::hosted_recovery::BeginHostedRecoveryRequest>(request)?;
+        wasm_result(
+            self.engine
+                .begin_hosted_recovery(&self.context, &request)
+                .await,
+        )
+    }
+
+    #[cfg(target_arch = "wasm32")]
     #[wasm_bindgen(js_name = refreshHostedLogin)]
     pub async fn refresh_hosted_login(&self, request: JsValue) -> Result<JsValue, JsValue> {
         let request = wasm_request::<RefreshHostedLoginRequest>(request)?;

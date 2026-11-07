@@ -4,11 +4,19 @@ set -euo pipefail
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 cd "$ROOT"
 OUTPUT_DIR="${1:-target/lambda-layers}"
+targets=(x86_64:x86_64-unknown-linux-gnu arm64:aarch64-unknown-linux-gnu)
+case "${2:-all}" in
+  all) ;;
+  x86_64) targets=("${targets[0]}") ;;
+  arm64) targets=("${targets[1]}") ;;
+  *) printf 'Unsupported Lambda architecture: %s\n' "$2" >&2; exit 1 ;;
+esac
+
 TARGET_DIR="$(cargo metadata --locked --format-version 1 --no-deps | jq -r '.target_directory')"
 rm -rf "$OUTPUT_DIR"
 mkdir -p "$OUTPUT_DIR"
 
-for entry in x86_64:x86_64-unknown-linux-gnu arm64:aarch64-unknown-linux-gnu; do
+for entry in "${targets[@]}"; do
   architecture="${entry%%:*}"
   target="${entry#*:}"
   "$ROOT/scripts/build-linux-binary.sh" "$target" sidecar-lambda-extension aux-sidecar \

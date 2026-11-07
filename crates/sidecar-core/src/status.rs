@@ -18,11 +18,16 @@ where T: SidecarTransport
     }
 
     pub fn status(&self) -> OperationalStatus {
-        status(&self.config, &self.state, self.transport.host_available())
+        status(
+            &self.config,
+            &self.state,
+            self.transport.host_available(),
+            self.transport.supports_native_recovery(),
+        )
     }
 
     pub fn capabilities(&self) -> Vec<CapabilityStatus> {
-        capabilities()
+        capabilities(self.transport.host_available() && self.transport.supports_native_recovery())
     }
 }
 
@@ -120,6 +125,7 @@ pub(crate) fn status(
     config: &SidecarEngineConfig,
     state: &SidecarState,
     host_available: bool,
+    supports_recovery: bool,
 ) -> OperationalStatus {
     let ready = ready(config, state, host_available);
     let snapshot = state.runtime_sync_snapshot();
@@ -144,12 +150,12 @@ pub(crate) fn status(
         } else {
             "unavailable"
         },
-        capabilities: capabilities(),
+        capabilities: capabilities(host_available && supports_recovery),
     }
 }
 
-pub(crate) fn capabilities() -> Vec<CapabilityStatus> {
-    [
+pub(crate) fn capabilities(supports_recovery: bool) -> Vec<CapabilityStatus> {
+    let mut capabilities = [
         "authz",
         "rate_limit",
         "entitlements",
@@ -166,7 +172,27 @@ pub(crate) fn capabilities() -> Vec<CapabilityStatus> {
         version: 1,
         state: "supported",
     })
-    .collect()
+    .collect::<Vec<_>>();
+    capabilities.push(CapabilityStatus {
+        name: "advanced_fraud",
+        version: 1,
+        state: "remote_only",
+    });
+    capabilities.push(CapabilityStatus {
+        name: "native_auth_end_user_context",
+        version: 1,
+        state: "unknown",
+    });
+    capabilities.push(CapabilityStatus {
+        name: "hosted_recovery",
+        version: 1,
+        state: if supports_recovery {
+            "supported"
+        } else {
+            "unsupported"
+        },
+    });
+    capabilities
 }
 
 fn required_artifacts(config: &SidecarEngineConfig) -> Vec<SyncArtifactKind> {

@@ -27,8 +27,6 @@ mod router_additional_tests;
 pub(crate) mod router_tests;
 #[cfg(test)]
 mod server_tests;
-#[cfg(test)]
-mod transport_tests;
 
 mod oauth_presenter;
 

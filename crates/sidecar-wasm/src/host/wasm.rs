@@ -94,7 +94,8 @@ impl<'a> BoundHostTransport<'a> {
 
         let global = js_sys::global();
         let fetch = &self.transport.fetch;
-        let (options, abort_controller) = self.build_request_options(method, body, content_type)?;
+        let (options, abort_controller) =
+            self.build_request_options(method, path, body, content_type)?;
         let url = format!("{}{}", self.config.base_url.trim_end_matches('/'), path);
         let promise = fetch
             .call2(&global, &JsValue::from_str(&url), &options)
@@ -106,21 +107,26 @@ impl<'a> BoundHostTransport<'a> {
             .map_err(|_| transport_error("wasm host fetch rejected or timed out"))?;
         read_fetch_response(response, abort_controller, path).await
     }
-    fn build_request_headers(&self, content_type: &str) -> Result<js_sys::Object, SidecarError> {
+    fn build_request_headers(
+        &self,
+        path: &str,
+        content_type: &str,
+    ) -> Result<js_sys::Object, SidecarError> {
         let config = self.config;
         let context = self.context;
         let headers = js_sys::Object::new();
+        let is_oauth = matches!(path, "/oauth2/token" | "/oauth2/recovery/stage");
         set_property(&headers, "content-type", content_type)?;
-        if !config.api_key.is_empty() {
+        if !is_oauth && !config.api_key.is_empty() {
             set_property(&headers, "x-api-key", &config.api_key)?;
         }
         if let Some(value) = config.tenant_domain.as_deref() {
             set_property(&headers, "x-tenant-domain", value)?;
         }
-        if let Some(value) = context.authorization.as_deref() {
+        if let Some(value) = context.authorization.as_deref().filter(|_| !is_oauth) {
             set_property(&headers, "authorization", value)?;
         }
-        if let Some(value) = context.client_ip.as_deref() {
+        if let Some(value) = context.client_ip.as_deref().filter(|_| !is_oauth) {
             set_property(&headers, "x-forwarded-for", value)?;
         }
         if let Some(value) = context.traceparent.as_deref() {
@@ -136,6 +142,7 @@ impl<'a> BoundHostTransport<'a> {
     fn build_request_options(
         &self,
         method: &str,
+        path: &str,
         body: Option<&str>,
         content_type: &str,
     ) -> Result<(js_sys::Object, Option<wasm_bindgen::JsValue>), SidecarError> {
@@ -151,7 +158,7 @@ impl<'a> BoundHostTransport<'a> {
         js_sys::Reflect::set(
             &options,
             &JsValue::from_str("headers"),
-            self.build_request_headers(content_type)?.as_ref(),
+            self.build_request_headers(path, content_type)?.as_ref(),
         )
         .map_err(|_| transport_error("wasm host request headers could not be configured"))?;
         if let Some(body) = body {
@@ -185,6 +192,9 @@ async fn read_fetch_response(
             .and_then(|value| value.as_f64())
             .map(|value| value as u16)
             .unwrap_or(0);
+        if matches!(path, "/oauth2/token" | "/oauth2/recovery/stage") {
+            return Err(read_oauth_failure(&response, abort_controller, status).await);
+        }
         if path == "/runtime/local/sync" && matches!(status, 404 | 405) {
             return Err(SidecarError::bad_gateway(
                 "runtime_sync_unavailable",
@@ -282,16 +292,7 @@ async fn read_response_body(
 ) -> Result<Vec<u8>, SidecarError> {
     use wasm_bindgen::{JsCast, JsValue};
 
-    let headers = js_sys::Reflect::get(response, &JsValue::from_str("headers"))
-        .map_err(|_| transport_error("wasm host response headers are unavailable"))?;
-    let get_header = js_sys::Reflect::get(&headers, &JsValue::from_str("get"))
-        .ok()
-        .and_then(|value| value.dyn_into::<js_sys::Function>().ok())
-        .ok_or_else(|| transport_error("wasm host response headers are unavailable"))?;
-    let content_length = get_header
-        .call1(&headers, &JsValue::from_str("content-length"))
-        .ok()
-        .and_then(|value| value.as_string())
+    let content_length = read_response_header(response, "content-length")
         .and_then(|value| value.parse::<usize>().ok());
     if content_length.is_some_and(|length| length > MAX_WASM_RESPONSE_BYTES) {
         return Err(transport_error(
@@ -355,4 +356,39 @@ fn set_property(object: &js_sys::Object, name: &str, value: &str) -> Result<(), 
 
 fn transport_error(message: &'static str) -> SidecarError {
     SidecarError::bad_gateway("wasm_host_transport_failed", message)
+}
+
+async fn read_oauth_failure(
+    response: &wasm_bindgen::JsValue,
+    abort_controller: Option<wasm_bindgen::JsValue>,
+    status: u16,
+) -> SidecarError {
+    let retry_after =
+        read_response_header(response, "retry-after").and_then(|value| value.parse().ok());
+    let payload = if status == 429 || !(400..500).contains(&status) {
+        serde_json::Value::Null
+    } else {
+        let body = match read_response_body(response, abort_controller).await {
+            Ok(body) => body,
+            Err(error) => return error,
+        };
+        match serde_json::from_slice(&body) {
+            Ok(payload) => payload,
+            Err(_) => return transport_error("native token response is invalid"),
+        }
+    };
+    sidecar_core::oauth_token::decode_oauth_failure(status, payload, retry_after)
+}
+
+fn read_response_header(response: &wasm_bindgen::JsValue, name: &str) -> Option<String> {
+    use wasm_bindgen::{JsCast, JsValue};
+    let headers = js_sys::Reflect::get(response, &JsValue::from_str("headers")).ok()?;
+    let get_header = js_sys::Reflect::get(&headers, &JsValue::from_str("get"))
+        .ok()?
+        .dyn_into::<js_sys::Function>()
+        .ok()?;
+    get_header
+        .call1(&headers, &JsValue::from_str(name))
+        .ok()?
+        .as_string()
 }

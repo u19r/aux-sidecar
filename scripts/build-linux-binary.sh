@@ -13,7 +13,11 @@ case "$target" in
 esac
 staging=$(mktemp -d)
 trap 'rm -rf "$staging"' EXIT
-docker buildx build --platform "$platform" --target binary \
+build=(docker buildx build --platform "$platform")
+if test -n "${AUX_BUILD_CACHE_CONFIG:-}"; then
+  build=(just --working-directory "$repo_root" --justfile "$repo_root/docker/sdk-build-cache.just" -- _aux-cache-sdk "$AUX_BUILD_CACHE_CONFIG" build "$package-$binary" "$platform")
+fi
+"${build[@]}" --target binary \
   --file "$repo_root/docker/sidecar.Dockerfile" \
   --build-arg PACKAGE="$package" --build-arg BIN="$binary" \
   --output "type=local,dest=$staging" "$repo_root"

@@ -20,13 +20,28 @@ where T: SidecarTransport + 'static
         context: &RequestContext,
         request: &CompleteHostedLoginRequest,
     ) -> SidecarResult<CompleteHostedLoginResult> {
-        let form_fields = hosted_login::complete_hosted_login_form(&self.state, request)?;
-        let tokens = self
+        let context = crate::oauth_token::prepare_native_oauth_context(context);
+        let exchange = hosted_login::prepare_hosted_login_exchange(&self.state, request)?;
+        let tokens = match self
             .transport
-            .exchange_oauth_code(&self.config, context, &form_fields)
-            .await?;
+            .exchange_oauth_code(&self.config, &context, &exchange.fields)
+            .await
+        {
+            Ok(tokens) => {
+                exchange.attempt.consume();
+                tokens
+            }
+            Err(error) => {
+                if error.status_code < 500 && !matches!(error.authentication.as_deref(),
+                    Some(sidecar_contract::native_auth::NativeAuthenticationFailure::RecoveryRequired { .. }
+                        | sidecar_contract::native_auth::NativeAuthenticationFailure::Retry { .. })) {
+                    exchange.attempt.consume();
+                }
+                return Err(error);
+            }
+        };
         let claims = self
-            .verify_oauth_token_authority(context, &tokens.access_token)
+            .verify_oauth_token_authority(&context, &tokens.access_token)
             .await?
             .claims;
         Ok(hosted_login::complete_hosted_login_result(tokens, claims))
@@ -37,13 +52,14 @@ where T: SidecarTransport + 'static
         context: &RequestContext,
         request: &RefreshHostedLoginRequest,
     ) -> SidecarResult<RefreshHostedLoginResult> {
+        let context = crate::oauth_token::prepare_native_oauth_context(context);
         let form_fields = hosted_login::refresh_hosted_login_form(request)?;
         let tokens = self
             .transport
-            .exchange_oauth_refresh_token(&self.config, context, &form_fields)
+            .exchange_oauth_refresh_token(&self.config, &context, &form_fields)
             .await?;
         let claims = self
-            .verify_oauth_token_authority(context, &tokens.access_token)
+            .verify_oauth_token_authority(&context, &tokens.access_token)
             .await?
             .claims;
         Ok(hosted_login::refresh_hosted_login_result(tokens, claims))

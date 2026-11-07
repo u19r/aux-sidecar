@@ -31,6 +31,24 @@ pub trait TransportThreadSafety {}
 impl<T> TransportThreadSafety for T {}
 
 pub trait SidecarTransport: TransportThreadSafety {
+    fn supports_native_recovery(&self) -> bool {
+        false
+    }
+
+    fn stage_oauth_recovery<'a>(
+        &'a self,
+        _config: &'a SidecarEngineConfig,
+        _context: &'a RequestContext,
+        _request: &'a sidecar_contract::hosted_recovery::NativeRecoveryStageRequest,
+    ) -> SidecarFuture<'a, sidecar_contract::hosted_recovery::NativeRecoveryStage> {
+        Box::pin(async {
+            Err(SidecarError::bad_request(
+                "hosted_recovery_unsupported",
+                "this transport does not support native recovery staging",
+            ))
+        })
+    }
+
     fn host_available(&self) -> bool {
         true
     }

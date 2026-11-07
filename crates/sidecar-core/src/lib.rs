@@ -8,11 +8,13 @@ mod engine_hosted_login;
 mod engine_jwt;
 pub mod error;
 pub mod hosted_login;
+mod hosted_recovery;
 pub mod local_authz;
 pub mod local_blocklist;
 pub mod local_entitlements;
 mod local_policy;
 mod local_rate_limit;
+pub mod oauth_token;
 pub mod revocation;
 pub mod route_policy;
 mod runtime_sync;
@@ -95,3 +97,9 @@ pub use transport::{SidecarFuture, SidecarTransport};
 
 #[cfg(test)]
 mod dpop_tests;
+
+#[cfg(test)]
+mod hosted_recovery_tests;
+
+#[cfg(test)]
+mod hosted_login_retry_tests;

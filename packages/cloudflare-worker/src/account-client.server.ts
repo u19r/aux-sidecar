@@ -15,7 +15,7 @@ export interface JsonRequestOptions {
 export class AuxFnClientError extends Error {
   constructor(
     readonly code: string,
-    readonly status: 401 | 403 | 503,
+    readonly status: 400 | 401 | 403 | 503,
   ) {
     super(code);
   }

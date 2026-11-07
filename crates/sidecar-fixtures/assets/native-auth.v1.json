@@ -1,0 +1,191 @@
+[
+  {
+    "name": "reauthentication_required",
+    "status": 400,
+    "body": {
+      "error": "invalid_grant",
+      "error_description": "must_not_copy_provider_diagnostic",
+      "request_id": "native-correlation-17",
+      "aux_recovery": {
+        "code": "reauthentication_required",
+        "continuation_id": "018b54a1-2d01-7000-8000-000000000017",
+        "expires_at": "2099-01-01T00:00:00Z"
+      }
+    },
+    "retry_after_seconds": null,
+    "expected_code": "reauthentication_required",
+    "expected_status": 400,
+    "expected_authentication": {
+      "type": "recovery_required",
+      "recovery": {
+        "code": "reauthentication_required",
+        "continuation_id": "018b54a1-2d01-7000-8000-000000000017",
+        "expires_at": "2099-01-01T00:00:00Z"
+      }
+    }
+  },
+  {
+    "name": "step_up_required",
+    "status": 400,
+    "body": {
+      "error": "invalid_grant",
+      "error_description": "must_not_copy_provider_diagnostic",
+      "request_id": "native-correlation-17",
+      "aux_recovery": {
+        "code": "step_up_required",
+        "continuation_id": "018b54a1-2d01-7000-8000-000000000017",
+        "expires_at": "2099-01-01T00:00:00Z"
+      }
+    },
+    "retry_after_seconds": null,
+    "expected_code": "step_up_required",
+    "expected_status": 400,
+    "expected_authentication": {
+      "type": "recovery_required",
+      "recovery": {
+        "code": "step_up_required",
+        "continuation_id": "018b54a1-2d01-7000-8000-000000000017",
+        "expires_at": "2099-01-01T00:00:00Z"
+      }
+    }
+  },
+  {
+    "name": "fraud_blocked",
+    "status": 400,
+    "body": {
+      "error": "invalid_grant",
+      "error_description": "must_not_copy_provider_diagnostic",
+      "request_id": "native-correlation-17",
+      "aux_recovery": {
+        "code": "fraud_blocked",
+        "continuation_id": "018b54a1-2d01-7000-8000-000000000017",
+        "expires_at": "2099-01-01T00:00:00Z"
+      }
+    },
+    "retry_after_seconds": null,
+    "expected_code": "fraud_blocked",
+    "expected_status": 400,
+    "expected_authentication": {
+      "type": "recovery_required",
+      "recovery": {
+        "code": "fraud_blocked",
+        "continuation_id": "018b54a1-2d01-7000-8000-000000000017",
+        "expires_at": "2099-01-01T00:00:00Z"
+      }
+    }
+  },
+  {
+    "name": "retry_429",
+    "status": 429,
+    "body": {
+      "error": "temporarily_unavailable",
+      "error_description": "must_not_copy_provider_diagnostic"
+    },
+    "retry_after_seconds": 17,
+    "expected_code": "oauth_token_retry_required",
+    "expected_status": 503,
+    "expected_authentication": {
+      "type": "retry",
+      "retry_after_seconds": 17
+    }
+  },
+  {
+    "name": "retry_503",
+    "status": 503,
+    "body": {
+      "error": "temporarily_unavailable",
+      "error_description": "must_not_copy_provider_diagnostic"
+    },
+    "retry_after_seconds": null,
+    "expected_code": "oauth_token_retry_required",
+    "expected_status": 503,
+    "expected_authentication": {
+      "type": "retry",
+      "retry_after_seconds": null
+    }
+  },
+  {
+    "name": "invalid_grant",
+    "status": 400,
+    "body": {
+      "error": "invalid_grant",
+      "error_description": "must_not_copy_provider_diagnostic"
+    },
+    "retry_after_seconds": null,
+    "expected_code": "oauth_token_exchange_denied",
+    "expected_status": 400,
+    "expected_authentication": {
+      "type": "denied",
+      "error": "invalid_grant"
+    }
+  },
+  {
+    "name": "invalid_client",
+    "status": 401,
+    "body": {
+      "error": "invalid_client",
+      "error_description": "must_not_copy_provider_diagnostic"
+    },
+    "retry_after_seconds": null,
+    "expected_code": "oauth_token_exchange_denied",
+    "expected_status": 401,
+    "expected_authentication": {
+      "type": "denied",
+      "error": "invalid_client"
+    }
+  },
+  {
+    "name": "unauthorized_client",
+    "status": 403,
+    "body": {
+      "error": "unauthorized_client",
+      "error_description": "must_not_copy_provider_diagnostic"
+    },
+    "retry_after_seconds": null,
+    "expected_code": "oauth_token_exchange_denied",
+    "expected_status": 403,
+    "expected_authentication": {
+      "type": "denied",
+      "error": "unauthorized_client"
+    }
+  },
+  {
+    "name": "new_native_error",
+    "status": 400,
+    "body": {
+      "error": "new_native_error",
+      "error_description": "must_not_copy_provider_diagnostic"
+    },
+    "retry_after_seconds": null,
+    "expected_code": "oauth_token_exchange_denied",
+    "expected_status": 400,
+    "expected_authentication": {
+      "type": "denied",
+      "error": "unknown"
+    }
+  },
+  {
+    "name": "degraded_warning",
+    "status": 200,
+    "body": {
+      "access_token": "public-contract-fixture",
+      "token_type": "Bearer",
+      "expires_in": 300,
+      "refresh_token": "fixture-rotated-refresh",
+      "scope": "openid",
+      "aux_warnings": {
+        "codes": [
+          "evaluation_warning",
+          "evaluation_degraded"
+        ]
+      }
+    },
+    "retry_after_seconds": null,
+    "expected_warnings": {
+      "codes": [
+        "evaluation_warning",
+        "evaluation_degraded"
+      ]
+    }
+  }
+]

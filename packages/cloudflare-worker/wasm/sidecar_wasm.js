@@ -42,6 +42,14 @@ export class SidecarClient {
         }
     }
     /**
+     * @param {any} request
+     * @returns {Promise<any>}
+     */
+    beginHostedRecovery(request) {
+        const ret = wasm.sidecarclient_beginHostedRecovery(this.__wbg_ptr, request);
+        return ret;
+    }
+    /**
      * @returns {any}
      */
     capabilities() {
@@ -408,7 +416,7 @@ function __wbg_get_imports() {
                     const a = state0.a;
                     state0.a = 0;
                     try {
-                        return __wasm_bindgen_func_elem_21657(a, state0.b, arg0, arg1);
+                        return __wasm_bindgen_func_elem_22038(a, state0.b, arg0, arg1);
                     } finally {
                         state0.a = a;
                     }
@@ -430,7 +438,7 @@ function __wbg_get_imports() {
                     const a = state0.a;
                     state0.a = 0;
                     try {
-                        return __wasm_bindgen_func_elem_21657(a, state0.b, arg0, arg1);
+                        return __wasm_bindgen_func_elem_22038(a, state0.b, arg0, arg1);
                     } finally {
                         state0.a = a;
                     }
@@ -510,13 +518,13 @@ function __wbg_get_imports() {
             return ret;
         },
         __wbindgen_generic_0000000000000001: function(arg0, arg1) {
-            // Cast intrinsic for `Closure(Closure { owned: true, function: Function { arguments: [Externref], shim_idx: 2372, ret: Result(Unit), inner_ret: Some(Result(Unit)) }, mutable: true }) -> Externref`.
-            const ret = makeMutClosure(arg0, arg1, __wasm_bindgen_func_elem_21655);
+            // Cast intrinsic for `Closure(Closure { owned: true, function: Function { arguments: [Externref], shim_idx: 2394, ret: Result(Unit), inner_ret: Some(Result(Unit)) }, mutable: true }) -> Externref`.
+            const ret = makeMutClosure(arg0, arg1, __wasm_bindgen_func_elem_22036);
             return ret;
         },
         __wbindgen_generic_0000000000000002: function(arg0, arg1) {
             // Cast intrinsic for `Closure(Closure { owned: true, function: Function { arguments: [], shim_idx: 5, ret: Unit, inner_ret: Some(Unit) }, mutable: true }) -> Externref`.
-            const ret = makeMutClosure(arg0, arg1, __wasm_bindgen_func_elem_810);
+            const ret = makeMutClosure(arg0, arg1, __wasm_bindgen_func_elem_893);
             return ret;
         },
         __wbindgen_generic_0000000000000003: function(arg0) {
@@ -554,18 +562,18 @@ function __wbg_get_imports() {
     };
 }
 
-function __wasm_bindgen_func_elem_810(arg0, arg1) {
-    wasm.__wasm_bindgen_func_elem_810(arg0, arg1);
+function __wasm_bindgen_func_elem_893(arg0, arg1) {
+    wasm.__wasm_bindgen_func_elem_893(arg0, arg1);
 }
 
-function __wasm_bindgen_func_elem_21657(arg0, arg1, arg2, arg3) {
-    wasm.__wasm_bindgen_func_elem_21657(arg0, arg1, arg2, arg3);
+function __wasm_bindgen_func_elem_22038(arg0, arg1, arg2, arg3) {
+    wasm.__wasm_bindgen_func_elem_22038(arg0, arg1, arg2, arg3);
 }
 
-function __wasm_bindgen_func_elem_21655(arg0, arg1, arg2) {
+function __wasm_bindgen_func_elem_22036(arg0, arg1, arg2) {
     try {
         const retptr = wasm.__wbindgen_add_to_stack_pointer(-16) >>> 0;
-        wasm.__wasm_bindgen_func_elem_21655(retptr, arg0, arg1, arg2);
+        wasm.__wasm_bindgen_func_elem_22036(retptr, arg0, arg1, arg2);
         var r0 = getDataViewMemory0().getInt32(retptr + 4 * 0, true);
         var r1 = getDataViewMemory0().getInt32(retptr + 4 * 1, true);
         if (r1) {

@@ -1,4 +1,17 @@
-target
-.git
-.DS_Store
+# One context policy serves native and canary builds, including registry caches.
+**/.git
+**/target
+**/.DS_Store
+**/node_modules
+**/.wrangler
+**/.authz-audit
+**/.env
+**/.env.*
+**/tmp
+**/run
+**/*.db
+**/*.sqlite
+**/*.log
+**/*.profraw
+**/*.profdata
 run-artifacts

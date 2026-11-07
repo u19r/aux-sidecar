@@ -8,7 +8,9 @@ pub mod context;
 pub mod entitlements;
 pub mod error;
 pub mod hosted_login;
+pub mod hosted_recovery;
 pub mod metrics;
+pub mod native_auth;
 pub mod policy;
 pub mod rate_limit;
 mod rate_limit_helpers;
@@ -28,6 +30,8 @@ mod entitlements_tests;
 mod hosted_login_tests;
 #[cfg(test)]
 mod metrics_tests;
+#[cfg(test)]
+mod native_auth_tests;
 #[cfg(test)]
 mod performance_tests;
 #[cfg(test)]

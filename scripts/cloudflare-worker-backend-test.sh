@@ -13,7 +13,7 @@ node "$PACKAGE/tests/backend-server.mjs" >"$ARTIFACT_DIR/backend.log" 2>&1 &
 backend_pid=$!
 (
   cd "$PACKAGE"
-  npx wrangler dev --config tests/wrangler.backend.jsonc --ip 127.0.0.1 --port 18788 \
+  exec ./node_modules/.bin/wrangler dev --config tests/wrangler.backend.jsonc --ip 127.0.0.1 --port 18788 \
     >"$ROOT/$ARTIFACT_DIR/wrangler.log" 2>&1
 ) &
 wrangler_pid=$!

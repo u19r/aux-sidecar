@@ -14,6 +14,12 @@ use crate::{
 pub struct BeginHostedLoginRequest {
     #[serde(deserialize_with = "deserialize_client_id")]
     pub client_id: String,
+    #[serde(
+        default,
+        skip_serializing_if = "Option::is_none",
+        deserialize_with = "deserialize_optional_resource"
+    )]
+    pub resource: Option<String>,
     #[serde(deserialize_with = "deserialize_redirect_uri")]
     pub redirect_uri: String,
     #[serde(default, deserialize_with = "deserialize_scopes")]
@@ -67,6 +73,8 @@ pub struct HostedLoginTokenSet {
     pub scope: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub id_token: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub aux_warnings: Option<crate::native_auth::NativeAuthenticationWarnings>,
 }
 
 impl fmt::Debug for HostedLoginTokenSet {
@@ -98,6 +106,12 @@ pub struct CompleteHostedLoginResult {
 pub struct RefreshHostedLoginRequest {
     #[serde(deserialize_with = "deserialize_client_id")]
     pub client_id: String,
+    #[serde(
+        default,
+        skip_serializing_if = "Option::is_none",
+        deserialize_with = "deserialize_optional_resource"
+    )]
+    pub resource: Option<String>,
     #[serde(deserialize_with = "deserialize_refresh_token")]
     pub refresh_token: String,
     #[serde(
@@ -165,4 +179,13 @@ impl fmt::Debug for RefreshHostedLoginRequest {
 pub struct RefreshHostedLoginResult {
     pub tokens: HostedLoginTokenSet,
     pub access_token_claims: serde_json::Value,
+}
+
+fn deserialize_optional_resource<'de, D>(deserializer: D) -> Result<Option<String>, D::Error>
+where D: serde::Deserializer<'de> {
+    serde_bounds::deserialize_optional_string_with_limit(
+        deserializer,
+        crate::constants::HOSTED_LOGIN_RESOURCE_MAX_BYTES,
+        true,
+    )
 }

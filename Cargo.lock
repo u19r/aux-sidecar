@@ -14,7 +14,7 @@ dependencies = [
 [[package]]
 name = "alloc-counter"
 version = "0.1.0"
-source = "git+https://github.com/u19r/aux-common?rev=6d6a27ab346ede89700034e6f5f3ac3be318ba89#6d6a27ab346ede89700034e6f5f3ac3be318ba89"
+source = "git+https://github.com/u19r/aux-common?rev=d5d2bd38f8fb1419de8bb6758934da2557731b79#d5d2bd38f8fb1419de8bb6758934da2557731b79"
 dependencies = [
  "alloc-counter-macros",
  "serde",
@@ -24,7 +24,7 @@ dependencies = [
 [[package]]
 name = "alloc-counter-macros"
 version = "0.1.0"
-source = "git+https://github.com/u19r/aux-common?rev=6d6a27ab346ede89700034e6f5f3ac3be318ba89#6d6a27ab346ede89700034e6f5f3ac3be318ba89"
+source = "git+https://github.com/u19r/aux-common?rev=d5d2bd38f8fb1419de8bb6758934da2557731b79#d5d2bd38f8fb1419de8bb6758934da2557731b79"
 dependencies = [
  "quote",
  "syn 3.0.9",
@@ -95,7 +95,7 @@ checksum = "1505bd5d3d116872e7271a6d4e16d81d0c8570876c8de68093a09ac269d8aac0"
 [[package]]
 name = "authz-cedar"
 version = "0.1.0"
-source = "git+https://github.com/u19r/aux-common?rev=6d6a27ab346ede89700034e6f5f3ac3be318ba89#6d6a27ab346ede89700034e6f5f3ac3be318ba89"
+source = "git+https://github.com/u19r/aux-common?rev=d5d2bd38f8fb1419de8bb6758934da2557731b79#d5d2bd38f8fb1419de8bb6758934da2557731b79"
 dependencies = [
  "authz-types",
  "cedar-policy",
@@ -108,7 +108,7 @@ dependencies = [
 [[package]]
 name = "authz-runtime"
 version = "0.1.0"
-source = "git+https://github.com/u19r/aux-common?rev=6d6a27ab346ede89700034e6f5f3ac3be318ba89#6d6a27ab346ede89700034e6f5f3ac3be318ba89"
+source = "git+https://github.com/u19r/aux-common?rev=d5d2bd38f8fb1419de8bb6758934da2557731b79#d5d2bd38f8fb1419de8bb6758934da2557731b79"
 dependencies = [
  "authz-cedar",
  "authz-types",
@@ -123,7 +123,7 @@ dependencies = [
 [[package]]
 name = "authz-types"
 version = "0.1.0"
-source = "git+https://github.com/u19r/aux-common?rev=6d6a27ab346ede89700034e6f5f3ac3be318ba89#6d6a27ab346ede89700034e6f5f3ac3be318ba89"
+source = "git+https://github.com/u19r/aux-common?rev=d5d2bd38f8fb1419de8bb6758934da2557731b79#d5d2bd38f8fb1419de8bb6758934da2557731b79"
 dependencies = [
  "chrono",
  "oauth-dpop",
@@ -1338,7 +1338,7 @@ dependencies = [
 [[package]]
 name = "http-request"
 version = "0.1.0"
-source = "git+https://github.com/u19r/aux-common?rev=6d6a27ab346ede89700034e6f5f3ac3be318ba89#6d6a27ab346ede89700034e6f5f3ac3be318ba89"
+source = "git+https://github.com/u19r/aux-common?rev=d5d2bd38f8fb1419de8bb6758934da2557731b79#d5d2bd38f8fb1419de8bb6758934da2557731b79"
 dependencies = [
  "bytes",
  "futures-util",
@@ -1740,7 +1740,7 @@ dependencies = [
 [[package]]
 name = "jose-core"
 version = "0.1.0"
-source = "git+https://github.com/u19r/aux-common?rev=6d6a27ab346ede89700034e6f5f3ac3be318ba89#6d6a27ab346ede89700034e6f5f3ac3be318ba89"
+source = "git+https://github.com/u19r/aux-common?rev=d5d2bd38f8fb1419de8bb6758934da2557731b79#d5d2bd38f8fb1419de8bb6758934da2557731b79"
 dependencies = [
  "base64 0.23.1",
  "p256 0.14.0",
@@ -1790,7 +1790,7 @@ dependencies = [
 [[package]]
 name = "jwt-decode"
 version = "0.1.0"
-source = "git+https://github.com/u19r/aux-common?rev=6d6a27ab346ede89700034e6f5f3ac3be318ba89#6d6a27ab346ede89700034e6f5f3ac3be318ba89"
+source = "git+https://github.com/u19r/aux-common?rev=d5d2bd38f8fb1419de8bb6758934da2557731b79#d5d2bd38f8fb1419de8bb6758934da2557731b79"
 dependencies = [
  "base64 0.23.1",
  "curve25519-dalek 5.0.0",
@@ -1957,7 +1957,7 @@ checksum = "4050469837a6ff301cd14c1f8f24f88549e6d548f24f64e2148eb0f72cebc51f"
 [[package]]
 name = "lru-ttl-cache"
 version = "0.1.0"
-source = "git+https://github.com/u19r/aux-common?rev=6d6a27ab346ede89700034e6f5f3ac3be318ba89#6d6a27ab346ede89700034e6f5f3ac3be318ba89"
+source = "git+https://github.com/u19r/aux-common?rev=d5d2bd38f8fb1419de8bb6758934da2557731b79#d5d2bd38f8fb1419de8bb6758934da2557731b79"
 dependencies = [
  "futures-util",
  "hashlink",
@@ -1999,7 +1999,7 @@ dependencies = [
 [[package]]
 name = "metrics-facade"
 version = "0.1.0"
-source = "git+https://github.com/u19r/aux-common?rev=6d6a27ab346ede89700034e6f5f3ac3be318ba89#6d6a27ab346ede89700034e6f5f3ac3be318ba89"
+source = "git+https://github.com/u19r/aux-common?rev=d5d2bd38f8fb1419de8bb6758934da2557731b79#d5d2bd38f8fb1419de8bb6758934da2557731b79"
 dependencies = [
  "http",
  "metrics",
@@ -2157,7 +2157,7 @@ dependencies = [
 [[package]]
 name = "oauth-dpop"
 version = "0.1.0"
-source = "git+https://github.com/u19r/aux-common?rev=6d6a27ab346ede89700034e6f5f3ac3be318ba89#6d6a27ab346ede89700034e6f5f3ac3be318ba89"
+source = "git+https://github.com/u19r/aux-common?rev=d5d2bd38f8fb1419de8bb6758934da2557731b79#d5d2bd38f8fb1419de8bb6758934da2557731b79"
 dependencies = [
  "base64 0.23.1",
  "http",
@@ -3297,6 +3297,7 @@ dependencies = [
  "chrono",
  "serde",
  "serde_json",
+ "sidecar-fixtures",
  "thiserror",
 ]
 

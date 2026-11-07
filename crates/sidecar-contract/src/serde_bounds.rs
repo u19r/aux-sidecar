@@ -33,14 +33,14 @@ pub(crate) fn deserialize_optional_bounded_string<'de, D>(
     deserializer: D,
 ) -> Result<Option<String>, D::Error>
 where D: Deserializer<'de> {
-    deserialize_optional_string(deserializer, false)
+    deserialize_optional_string_with_limit(deserializer, CONTRACT_MAX_STRING_BYTES, false)
 }
 
 pub(crate) fn deserialize_optional_non_empty_bounded_string<'de, D>(
     deserializer: D,
 ) -> Result<Option<String>, D::Error>
 where D: Deserializer<'de> {
-    deserialize_optional_string(deserializer, true)
+    deserialize_optional_string_with_limit(deserializer, CONTRACT_MAX_STRING_BYTES, true)
 }
 
 pub(crate) fn deserialize_bounded_vec<'de, D, T>(
@@ -97,14 +97,18 @@ where
     deserializer.deserialize_option(OptionalU64Visitor { max })
 }
 
-fn deserialize_optional_string<'de, D>(
+pub(crate) fn deserialize_optional_string_with_limit<'de, D>(
     deserializer: D,
+    max: usize,
     require_non_empty: bool,
 ) -> Result<Option<String>, D::Error>
 where
     D: Deserializer<'de>,
 {
-    deserializer.deserialize_option(OptionalStringVisitor { require_non_empty })
+    deserializer.deserialize_option(OptionalStringVisitor {
+        max,
+        require_non_empty,
+    })
 }
 
 fn deserialize_string_with_limit<'de, D>(
@@ -152,6 +156,7 @@ impl<'de> Visitor<'de> for BoundedStringVisitor {
 }
 
 struct OptionalStringVisitor {
+    max: usize,
     require_non_empty: bool,
 }
 
@@ -171,7 +176,7 @@ impl<'de> Visitor<'de> for OptionalStringVisitor {
     where D: Deserializer<'de> {
         deserializer
             .deserialize_string(BoundedStringVisitor {
-                max: CONTRACT_MAX_STRING_BYTES,
+                max: self.max,
                 require_non_empty: self.require_non_empty,
             })
             .map(Some)

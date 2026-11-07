@@ -17,6 +17,7 @@ thiserror = { workspace = true }
 
 [dev-dependencies]
 alloc-counter = { workspace = true }
+sidecar-fixtures = { version = "0.1.0", path = "../sidecar-fixtures" }
 
 [lints]
 workspace = true

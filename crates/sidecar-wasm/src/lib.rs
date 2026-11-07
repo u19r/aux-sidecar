@@ -9,3 +9,6 @@ mod typescript;
 
 #[cfg(test)]
 mod api_tests;
+
+#[cfg(test)]
+mod native_auth_tests;

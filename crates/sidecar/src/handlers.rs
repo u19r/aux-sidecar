@@ -275,6 +275,18 @@ pub async fn refresh_hosted_login(
     }
 }
 
+pub async fn begin_hosted_recovery(
+    State(state): State<Arc<SidecarState>>,
+    headers: HeaderMap,
+    Json(request): Json<sidecar_contract::hosted_recovery::BeginHostedRecoveryRequest>,
+) -> impl IntoResponse {
+    let context = request_context(&headers);
+    match state.engine.begin_hosted_recovery(&context, &request).await {
+        Ok(response) => (StatusCode::OK, Json(response)).into_response(),
+        Err(error) => sidecar_error_response(error),
+    }
+}
+
 fn request_context(headers: &HeaderMap) -> RequestContext {
     RequestContext {
         authorization: header_string(headers, AUTHORIZATION.as_str()),

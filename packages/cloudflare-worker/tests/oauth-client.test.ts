@@ -170,7 +170,7 @@ describe("AuxFn public-client OAuth protocol", () => {
   );
 
   it.each([
-    [400, 401],
+    [400, 400],
     [401, 401],
     [429, 503],
     [500, 503],
@@ -185,7 +185,14 @@ describe("AuxFn public-client OAuth protocol", () => {
         .refreshToken("approved-refresh")
         .catch((value: unknown) => value);
       expect(error).toBeInstanceOf(AuxFnClientError);
-      expect(error).toMatchObject({ code: "oauth_token_exchange_failed", status });
+      expect(error).toMatchObject({
+        code: upstream === 429 || upstream >= 500 ? "oauth_token_retry_required" : "oauth_token_exchange_denied",
+        status,
+        authentication: upstream === 429 || upstream >= 500
+          ? { type: "retry", retry_after_seconds: null }
+          : { type: "denied", error: "unknown" },
+      });
+      expect(JSON.stringify(error)).not.toContain("private-provider-detail");
       expect(String(error)).not.toContain("private-provider-detail");
     },
   );

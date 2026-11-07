@@ -57,6 +57,10 @@ pub fn build_router(state: Arc<SidecarState>) -> Router {
             post(handlers::complete_hosted_login),
         )
         .route(
+            "/sidecar/hosted_login/recovery",
+            post(handlers::begin_hosted_recovery),
+        )
+        .route(
             "/sidecar/hosted_login/refresh",
             post(handlers::refresh_hosted_login),
         );

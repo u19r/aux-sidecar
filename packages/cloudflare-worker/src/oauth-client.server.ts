@@ -1,3 +1,4 @@
+import { readNativeOAuthFailure, readNativeWarnings, type NativeAuthenticationWarnings, type OAuthRecoverySource, type OAuthRecoveryAuthorization, type OAuthRecoveryStage, type OAuthTokenResource } from "./native-auth.server.js";
 import { AuxFnAccountClient, parseAccountUrl, type AuxFnAccountConnection } from "./account-client.server.js";
 
 /** Account authority is configured by the server, never derived from the login callback. */
@@ -10,12 +11,15 @@ export interface OAuthTokenSet {
   accessToken: string;
   refreshToken?: string;
   expiresIn: number;
+  auxWarnings?: NativeAuthenticationWarnings;
 }
 
 /** Recover this attempt from durable storage only after verifying browser-bound OAuth state. */
 export interface OAuthAttempt {
   codeVerifier: string;
   redirectUri: string;
+  /** Preserve this target with a staged recovery callback. Initial identity exchange defaults to UserInfo. */
+  resource?: OAuthTokenResource;
 }
 
 export interface OAuthResources {
@@ -43,7 +47,7 @@ export class AuxFnOAuthClient extends AuxFnAccountClient {
     return this.resources;
   }
 
-  /** Selects UserInfo authority for the initial identity exchange, using the saved PKCE attempt. */
+  /** Uses the saved PKCE attempt and its native resource target; initial identity exchange defaults to UserInfo. */
   async exchangeAuthorizationCode(code: string, attempt: OAuthAttempt): Promise<OAuthTokenSet> {
     const resources = await this.oauthResources();
     return this.exchangeToken(
@@ -53,7 +57,7 @@ export class AuxFnOAuthClient extends AuxFnAccountClient {
         code,
         redirect_uri: attempt.redirectUri,
         code_verifier: attempt.codeVerifier,
-        resource: resources.userInfo,
+        resource: attempt.resource === "customer_api" ? resources.customerApi : resources.userInfo,
       }),
     );
   }
@@ -71,6 +75,43 @@ export class AuxFnOAuthClient extends AuxFnAccountClient {
       }),
     );
     return { ...tokens, refreshToken: tokens.refreshToken ?? refreshToken };
+  }
+
+  /** Stage the original held source; native browser binding and proof still own recovery. */
+  async stageRecovery(source: OAuthRecoverySource, authorization: OAuthRecoveryAuthorization): Promise<OAuthRecoveryStage> {
+    const resources = await this.oauthResources();
+    const tokenResource = source.type === "refresh_token" ? "customer_api" : source.attempt.resource ?? "userinfo";
+    const resource = tokenResource === "customer_api" ? resources.customerApi : resources.userInfo;
+    const response = await this.sendJson("/oauth2/recovery/stage", { method: "POST", body: {
+      grant: this.prepareRecoveryGrant(source, resource),
+      authorization: this.prepareRecoveryAuthorization(authorization, resource),
+    } });
+    if (!response.ok) throw await readNativeOAuthFailure(response);
+    const value = await this.readJson(response, "oauth_recovery_stage_invalid");
+    const stageHandle = this.readString(value, "stage_handle", "oauth_recovery_stage_invalid");
+    const expiresAt = this.readString(value, "expires_at", "oauth_recovery_stage_invalid");
+    if (stageHandle.length !== 64 || !Number.isFinite(Date.parse(expiresAt))) {
+      throw this.createProtocolError("oauth_recovery_stage_invalid", 503);
+    }
+    return { stageHandle, expiresAt, tokenResource };
+  }
+
+  private prepareRecoveryGrant(source: OAuthRecoverySource, resource: string): Record<string, unknown> {
+    return source.type === "authorization_code" ? {
+      grant_type: "authorization_code", client_id: this.clientId, code: source.code,
+      redirect_uri: source.attempt.redirectUri, code_verifier: source.attempt.codeVerifier,
+      resource, continuation_id: source.recovery.continuation_id,
+    } : {
+      grant_type: "refresh_token", client_id: this.clientId, refresh_token: source.refreshToken,
+      scope: this.resourceScope, resource, continuation_id: source.recovery.continuation_id,
+    };
+  }
+
+  private prepareRecoveryAuthorization(authorization: OAuthRecoveryAuthorization, resource: string): Record<string, unknown> {
+    return { response_type: "code", client_id: this.clientId,
+      redirect_uri: authorization.redirectUri, state: authorization.state,
+      code_challenge: authorization.codeChallenge, code_challenge_method: "S256",
+      scope: authorization.scopes.join(" "), resource: [resource] };
   }
 
   async fetchIdentity(accessToken: string): Promise<{ subject: string }> {
@@ -108,8 +149,7 @@ export class AuxFnOAuthClient extends AuxFnAccountClient {
   private async exchangeToken(body: URLSearchParams): Promise<OAuthTokenSet> {
     const response = await this.sendForm("/oauth2/token", body);
     if (!response.ok) {
-      const status = response.status >= 500 || response.status === 429 ? 503 : 401;
-      throw this.createProtocolError("oauth_token_exchange_failed", status);
+      throw await readNativeOAuthFailure(response);
     }
     return this.parseTokenSet(
       await this.readJson(response, "oauth_token_response_invalid"),
@@ -134,9 +174,11 @@ export class AuxFnOAuthClient extends AuxFnAccountClient {
     ) {
       throw this.createProtocolError("oauth_token_response_invalid", 503);
     }
+    const warnings = readNativeWarnings(value.aux_warnings);
     return {
       accessToken,
       expiresIn,
+      ...(warnings === undefined ? {} : { auxWarnings: warnings }),
       ...(typeof value.refresh_token === "string" ? { refreshToken: value.refresh_token } : {}),
     };
   }

@@ -141,6 +141,7 @@ pub(super) fn sidecar_error_json(error: SidecarError) -> String {
     serde_json::to_string(&serde_json::json!({
         "code": error.code, "message": error.message, "status_code": error.status_code,
         "www_authenticate": error.oauth_challenge(),
+        "authentication": error.authentication, "request_id": error.request_id,
     }))
     .unwrap_or_else(|_| error_json("wasm_error_encode_failed", "failed to encode error"))
 }

@@ -1,6 +1,9 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+cd "$ROOT"
+
 cargo build --locked --release -p sidecar-wasm --target wasm32-unknown-unknown
 target_dir="$(cargo metadata --locked --format-version 1 --no-deps | jq -r '.target_directory')"
 wasm_input="$target_dir/wasm32-unknown-unknown/release/sidecar_wasm.wasm"

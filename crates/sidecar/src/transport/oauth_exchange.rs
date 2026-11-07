@@ -1,4 +1,8 @@
-use super::*;
+use sidecar_contract::{RequestContext, TokenResponse};
+use sidecar_core::{SidecarEngineConfig, SidecarError, SidecarFuture};
+
+use super::{NativeSidecarTransport, oauth_response::decode_oauth_response};
+use crate::transport_helpers::{tenant_url, with_context_headers};
 
 pub(super) fn exchange_oauth_token<'a>(
     transport: &'a NativeSidecarTransport,
@@ -19,13 +23,6 @@ pub(super) fn exchange_oauth_token<'a>(
         .await
         .map_err(|err| SidecarError::bad_gateway("oauth_token_exchange_error", err.to_string()))?;
 
-        if !response.status().is_success() {
-            return Err(SidecarError::unauthorized(
-                "oauth_token_exchange_failed",
-                response.status().to_string(),
-            ));
-        }
-
-        decode_json_body(response, "oauth_token_decode_failed").await
+        decode_oauth_response(response).await
     })
 }

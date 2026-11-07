@@ -22,3 +22,9 @@ pub(crate) const HOSTED_LOGIN_CLIENT_ID_MAX_BYTES: usize = 512;
 pub(crate) const HOSTED_LOGIN_REDIRECT_URI_MAX_BYTES: usize = 2_048;
 pub(crate) const HOSTED_LOGIN_SCOPE_MAX_ITEMS: usize = 32;
 pub(crate) const HOSTED_LOGIN_FIELD_MAX_BYTES: usize = 512;
+
+pub(crate) const NATIVE_AUTH_MAX_WARNING_CODES: usize = 2;
+
+pub(crate) const HOSTED_LOGIN_RESOURCE_MAX_BYTES: usize = 2_048;
+
+pub(crate) const NATIVE_RECOVERY_STAGE_HANDLE_BYTES: usize = 64;

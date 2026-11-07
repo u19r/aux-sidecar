@@ -17,3 +17,7 @@ export { AuxFnClientError } from "./account-client.server.js";
 export default {
   fetch: withAuxSidecar(async () => new Response("ok")),
 } satisfies ExportedHandler<AuxSidecarWorkerEnv>;
+
+export { AuxFnOAuthError, type NativeAuthenticationFailure, type NativeAuthenticationRecovery,
+  type NativeAuthenticationWarnings, type NativeRecoveryCode, type NativeWarningCode,
+  type OAuthRecoverySource, type OAuthRecoveryAuthorization, type OAuthRecoveryStage, type OAuthTokenResource } from "./native-auth.server.js";

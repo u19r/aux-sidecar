@@ -17,15 +17,33 @@ use crate::{
     SidecarEngineConfig, SidecarFuture, SidecarTransport,
 };
 
+#[derive(Debug, Clone, Copy, Default)]
+pub(crate) enum NativeAuthTestMode {
+    #[default]
+    Ready,
+    CodeUnavailable,
+    CodePending,
+    StagePending,
+}
+
 #[derive(Debug)]
 pub(crate) struct TestTransport {
     jwks: serde_json::Value,
+    native_auth_mode: NativeAuthTestMode,
     jwks_fetch_count: Arc<AtomicUsize>,
 }
 
 impl TestTransport {
+    pub(crate) fn with_native_auth_mode(mode: NativeAuthTestMode) -> Self {
+        Self {
+            native_auth_mode: mode,
+            ..Self::new()
+        }
+    }
+
     pub(crate) fn new() -> Self {
         Self {
+            native_auth_mode: NativeAuthTestMode::Ready,
             jwks: test_jwks(),
             jwks_fetch_count: Arc::new(AtomicUsize::new(0)),
         }
@@ -33,6 +51,7 @@ impl TestTransport {
 
     pub(crate) fn with_jwks(jwks: serde_json::Value) -> Self {
         Self {
+            native_auth_mode: NativeAuthTestMode::Ready,
             jwks,
             jwks_fetch_count: Arc::new(AtomicUsize::new(0)),
         }
@@ -40,6 +59,7 @@ impl TestTransport {
 
     pub(crate) fn with_jwks_fetch_count(jwks_fetch_count: Arc<AtomicUsize>) -> Self {
         Self {
+            native_auth_mode: NativeAuthTestMode::Ready,
             jwks: test_jwks(),
             jwks_fetch_count,
         }
@@ -47,6 +67,19 @@ impl TestTransport {
 }
 
 impl SidecarTransport for TestTransport {
+    fn supports_native_recovery(&self) -> bool {
+        matches!(self.native_auth_mode, NativeAuthTestMode::StagePending)
+    }
+
+    fn stage_oauth_recovery<'a>(
+        &'a self,
+        _config: &'a SidecarEngineConfig,
+        _context: &'a RequestContext,
+        _request: &'a sidecar_contract::hosted_recovery::NativeRecoveryStageRequest,
+    ) -> SidecarFuture<'a, sidecar_contract::hosted_recovery::NativeRecoveryStage> {
+        Box::pin(std::future::pending())
+    }
+
     fn acquire_leases<'a>(
         &'a self,
         _config: &'a SidecarEngineConfig,
@@ -125,6 +158,17 @@ impl SidecarTransport for TestTransport {
         _form_fields: &'a [(&'a str, String)],
     ) -> SidecarFuture<'a, sidecar_contract::TokenResponse> {
         Box::pin(async move {
+            match self.native_auth_mode {
+                NativeAuthTestMode::CodeUnavailable => {
+                    return Err(crate::SidecarError::bad_gateway(
+                        "fixture_connection_refused",
+                        "native connection unavailable",
+                    ));
+                }
+                NativeAuthTestMode::CodePending => return std::future::pending().await,
+                NativeAuthTestMode::Ready | NativeAuthTestMode::StagePending => {}
+            }
+
             Ok(TokenResponse {
                 access_token: test_token(Some("sidecar-resource")),
                 token_type: "Bearer".to_string(),
@@ -132,6 +176,7 @@ impl SidecarTransport for TestTransport {
                 refresh_token: None,
                 scope: None,
                 id_token: None,
+                aux_warnings: None,
             })
         })
     }
@@ -157,6 +202,7 @@ impl SidecarTransport for TestTransport {
                 refresh_token: Some("refresh_456".to_string()),
                 scope: Some("openid profile".to_string()),
                 id_token: None,
+                aux_warnings: None,
             })
         })
     }

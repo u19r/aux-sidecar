@@ -1,0 +1,6 @@
+{
+  "config": {
+    "defaults": {"routes": {"POST /canary": {"limit": 10, "period": "second", "burst": 20}}, "route_groups": {}},
+    "named": {}, "entitlement_overrides": {}, "org_overrides": {}
+  }
+}

@@ -40,6 +40,7 @@ pub use authz::{
     AuthzSubjectCacheKey, LocalAuthzShadowMetrics,
 };
 pub use cache::{AuthzCachedValueState, CachedValue, CachedValueState, current_time_millis};
+pub(crate) use hosted_login::HostedLoginAttempt;
 pub use hosted_login::HostedLoginSession;
 use immutable_cache::BoundedLruCache;
 use runtime_caches::prune_expired_and_bound_cache;

@@ -69,6 +69,23 @@ impl WasmHostTransport {
 }
 
 impl SidecarTransport for WasmHostTransport {
+    fn supports_native_recovery(&self) -> bool {
+        cfg!(target_arch = "wasm32")
+    }
+
+    fn stage_oauth_recovery<'a>(
+        &'a self,
+        config: &'a SidecarEngineConfig,
+        context: &'a RequestContext,
+        request: &'a sidecar_contract::hosted_recovery::NativeRecoveryStageRequest,
+    ) -> SidecarFuture<'a, sidecar_contract::hosted_recovery::NativeRecoveryStage> {
+        self.bind_request(config, context).fetch_json(
+            "POST",
+            "/oauth2/recovery/stage",
+            Some(request),
+        )
+    }
+
     fn host_available(&self) -> bool {
         #[cfg(target_arch = "wasm32")]
         {

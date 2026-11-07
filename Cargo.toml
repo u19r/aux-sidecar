@@ -13,10 +13,10 @@ repository = "https://github.com/u19r/aux-sidecar"
 version = "0.1.0"
 
 [workspace.dependencies]
-alloc-counter = { git = "https://github.com/u19r/aux-common", package = "alloc-counter", rev = "6d6a27ab346ede89700034e6f5f3ac3be318ba89" }
-authz-cedar = { git = "https://github.com/u19r/aux-common", package = "authz-cedar", rev = "6d6a27ab346ede89700034e6f5f3ac3be318ba89" }
-authz-runtime = { git = "https://github.com/u19r/aux-common", package = "authz-runtime", rev = "6d6a27ab346ede89700034e6f5f3ac3be318ba89" }
-authz-types = { git = "https://github.com/u19r/aux-common", package = "authz-types", rev = "6d6a27ab346ede89700034e6f5f3ac3be318ba89" }
+alloc-counter = { package = "alloc-counter",   git = "https://github.com/u19r/aux-common",rev = "d5d2bd38f8fb1419de8bb6758934da2557731b79"}
+authz-cedar = { package = "authz-cedar",   git = "https://github.com/u19r/aux-common",rev = "d5d2bd38f8fb1419de8bb6758934da2557731b79"}
+authz-runtime = { package = "authz-runtime",   git = "https://github.com/u19r/aux-common",rev = "d5d2bd38f8fb1419de8bb6758934da2557731b79"}
+authz-types = { package = "authz-types",   git = "https://github.com/u19r/aux-common",rev = "d5d2bd38f8fb1419de8bb6758934da2557731b79"}
 axum = "0.8.9"
 base64 = "0.23.1"
 chrono = { version = "0.4.45", features = ["clock", "serde"] }
@@ -24,12 +24,12 @@ cpu-time = "1.0.0"
 cucumber = "0.23.0"
 futures = "0.3.34"
 http = "1.5.0"
-http-request = { git = "https://github.com/u19r/aux-common", package = "http-request", rev = "6d6a27ab346ede89700034e6f5f3ac3be318ba89" }
+http-request = { package = "http-request",   git = "https://github.com/u19r/aux-common",rev = "d5d2bd38f8fb1419de8bb6758934da2557731b79"}
 js-sys = "0.3.107"
 jsonwebtoken = { version = "11.1.0", default-features = false, features = ["use_pem"] }
-jwt-decode = { git = "https://github.com/u19r/aux-common", package = "jwt-decode", rev = "6d6a27ab346ede89700034e6f5f3ac3be318ba89" }
+jwt-decode = { package = "jwt-decode",   git = "https://github.com/u19r/aux-common",rev = "d5d2bd38f8fb1419de8bb6758934da2557731b79"}
 libc = "0.2.191"
-oauth-dpop = { git = "https://github.com/u19r/aux-common", package = "oauth-dpop", rev = "6d6a27ab346ede89700034e6f5f3ac3be318ba89" }
+oauth-dpop = { package = "oauth-dpop",   git = "https://github.com/u19r/aux-common",rev = "d5d2bd38f8fb1419de8bb6758934da2557731b79"}
 proptest = "1.12.0"
 rand = "0.10.3"
 reqwest = { version = "0.13.5", default-features = false, features = ["json", "rustls"] }
@@ -45,7 +45,8 @@ tower = "0.5.3"
 tracing = "0.1.44"
 tracing-subscriber = { version = "0.3.23", features = ["env-filter", "fmt", "json"] }
 url = "2.5.8"
-wasm-bindgen = "0.2.130"
+# The crate and CLI must use the same schema version; software-versions.json owns both.
+wasm-bindgen = "=0.2.130"
 wasm-bindgen-futures = "0.4.80"
 
 [workspace.lints.clippy]
